@@ -1,0 +1,15 @@
+{
+  "root": "./data",
+  "port": "8442",
+  "serverUri": "https://localhost:8442",
+  "solidIdUri": "https://localhost:8443",
+  "mount": "/",
+  "configPath": "./config",
+  "sslKey": "../../privkey.pem",
+  "sslCert": "../../fullchain.pem",
+  "multiuser": true,
+  "corsProxy": "/proxy",
+  "enforceToc": true,
+  "tocUri": "https://your-toc",
+  "supportEmail": "Your support email address"
+}
