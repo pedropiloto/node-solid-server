@@ -26,6 +26,7 @@ const { routeResolvedFile } = require('./utils')
 const ResourceMapper = require('./resource-mapper')
 const aclCheck = require('@solid/acl-check')
 const { version } = require('../package.json')
+const {createChannel } = require('./services/publish-service')
 
 const corsSettings = cors({
   methods: [
@@ -64,6 +65,8 @@ function createApp (argv = {}) {
   initHeaders(app)
   initViews(app, configPath)
   initLoggers()
+
+  createChannel(argv.amqpUrl)
 
   // Serve the public 'common' directory (for shared CSS files, etc)
   app.use('/common', express.static(path.join(__dirname, '../common')))

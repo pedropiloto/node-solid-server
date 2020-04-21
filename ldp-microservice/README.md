@@ -1,4 +1,4 @@
-# solid-server in Node
+# ldp-web-server in Node
 
 [![](https://img.shields.io/badge/project-Solid-7C4DFF.svg?style=flat-square)](https://github.com/solid/solid)
 [![Build Status](https://travis-ci.org/solid/node-solid-server.svg?branch=master&style=flat-square)](https://travis-ci.org/solid/node-solid-server)
@@ -7,7 +7,7 @@
 
 > [Solid](https://github.com/solid) server in [NodeJS](https://nodejs.org/)
 
-`solid-server` lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/solid/node-solid-server/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/solid/node-solid-server/blob/master/README.md#library-usage) (advanced).
+`ldp-web-server` lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/solid/node-solid-server/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/solid/node-solid-server/blob/master/README.md#library-usage) (advanced).
 
 ## Solid Features supported
 - [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
@@ -31,46 +31,46 @@ Section below.
 To install, first install [Node](https://nodejs.org/en/) and then run the following
 
 ```bash
-$ npm install -g solid-server
+$ npm install -g ldp-web-server
 ```
 
 ### Run a single-user server (beginner)
 
-The easiest way to setup `solid-server` is by running the wizard. This will create a `config.json` in your current folder
+The easiest way to setup `ldp-web-server` is by running the wizard. This will create a `config.json` in your current folder
 
 ```bash
-$ solid init
+$ ldp-web init
 ```
 **Note**: If prompted for an SSL key and certificate, follow the instructions below.
 
-To run your server, simply run `solid start`:
+To run your server, simply run `ldp-web start`:
 
 ```bash
-$ solid start
-# Solid server (solid v0.2.24) running on https://localhost:8443/
+$ ldp-web start
+# Solid server (ldp-web v0.2.24) running on https://localhost:8443/
 ```
 
 If you prefer to use flags instead, the following would be the equivalent
 
 ```bash
-$ solid start --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-# Solid server (solid v0.2.24) running on https://localhost:8443/
+$ ldp-web start --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+# Solid server (ldp-web v0.2.24) running on https://localhost:8443/
 ```
 
-If you want to run `solid` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
+If you want to run `ldp-web` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
 
 ```bash
-$ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-# Solid server (solid v0.2.24) running on https://localhost:8443/
+$ ldp-web start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+# Solid server (ldp-web v0.2.24) running on https://localhost:8443/
 ```
 
 ### Running in development environments
 
-Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag and sets the `rejectUnauthorized` option.
+Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/ldp-web-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag and sets the `rejectUnauthorized` option.
 
 If you want to run in multi-user mode on localhost, do the following:
-* configure the server as such with `bin/solid-test init`
-* start the server with `bin/solid-test start`
+* configure the server as such with `bin/ldp-web-test init`
+* start the server with `bin/ldp-web-test start`
 * visit https://localhost:8443 and register a user, for instance 'myusername'.
 * Edit your hosts file and add a line `127.0.0.1 myusername.localhost`
 * Now you can visit https://myusername.localhost:8443.
@@ -78,7 +78,7 @@ If you want to run in multi-user mode on localhost, do the following:
 ##### How do I get an SSL key and certificate?
 You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
 
-For testing purposes, you can use `bin/solid-test` with a _self-signed_ certificate, generated as follows:
+For testing purposes, you can use `bin/ldp-web-test` with a _self-signed_ certificate, generated as follows:
 
 ```
 $ openssl req -outform PEM -keyform PEM -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout ../privkey.pem -days 365 -out ../fullchain.pem
@@ -87,13 +87,13 @@ $ openssl req -outform PEM -keyform PEM -new -x509 -sha256 -newkey rsa:2048 -nod
 
 Note that this example creates the `fullchain.pem` and `privkey.pem` files
 in a directory one level higher from the current, so that you don't
-accidentally commit your certificates to `solid` while you're developing.
+accidentally commit your certificates to `ldp-web` while you're developing.
 
 If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store.
 
 ### Run multi-user server (intermediate)
 
-You can run `solid` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
+You can run `ldp-web` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
 
 Pre-requisites:
 - Get a [Wildcard Certificate](https://en.wikipedia.org/wiki/Wildcard_certificate)
@@ -101,17 +101,17 @@ Pre-requisites:
 - (If you are running locally) Add the line `127.0.0.1 *.localhost` to `/etc/hosts`
 
 ```bash
-$ solid init
+$ ldp-web init
 ..
 ? Allow users to register their WebID (y/N) # write `y` here
 ..
-$ solid start
+$ ldp-web start
 ```
 
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid start --multiuser --port 8443 --ssl-cert /path/to/cert --ssl-key /path/to/key --root ./data
+$ ldp-web start --multiuser --port 8443 --ssl-cert /path/to/cert --ssl-key /path/to/key --root ./data
 ```
 
 Your users will have a dedicated folder under `./data` at `./data/<username>.<yourdomain.tld>`. Also, your root domain's website will be in `./data/<yourdomain.tld>`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
@@ -126,18 +126,18 @@ See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-s
 ### Upgrading from version 4
 To upgrade from version 4 to the current version 5, you need to run a migration script, as explained in the [v5 upgrade notes](https://github.com/solid/node-solid-server/blob/master/CHANGELOG.md#500-upgrade-notes).
 
-Also, be aware that starting from version 5, third-party apps are untrusted by default. To trust a third-party app, before you can log in to it, you first need to go to your profile at https://example.com/profile/card#me (important to include the '#me' there), and then hover over the 'card' header to reveal the context menu. From there, select the 'A' symbol to go to your trusted applications pane, where you can whitelist third-party apps before using them. See also https://github.com/solid/node-solid-server/issues/1142 about streamlining this UX flow.
+Also, be aware that starting from version 5, third-party apps are untrusted by default. To trust a third-party app, before you can log in to it, you first need to go to your profile at https://example.com/profile/card#me (important to include the '#me' there), and then hover over the 'card' header to reveal the context menu. From there, select the 'A' symbol to go to your trusted applications pane, where you can whitelist third-party apps before using them. See also https://github.com/ldp-web/node-ldp-web-server/issues/1142 about streamlining this UX flow.
 
 ### Extra flags (expert)
 The command line tool has the following options
 
 ```
-$ solid
+$ ldp-web
 
-  Usage: solid [options] [command]
+  Usage: ldp-web [options] [command]
 
   Commands:
-    init [options]    create solid server configurations
+    init [options]    create ldp-web server configurations
     start [options]   run the Solid server
 
   Options:
@@ -145,17 +145,17 @@ $ solid
     -V, --version  output the version number
 
 
-$ solid init --help
+$ ldp-web init --help
 
   Usage: init [options]
-  Create solid server configurations
+  Create ldp-web server configurations
 
   Options:
     -h, --help  output usage information
     --advanced  Ask for all the settings
 
 
-$ solid start --help
+$ ldp-web start --help
 
   Usage: start [options]
 
@@ -197,7 +197,7 @@ $ solid start --help
     --email-auth-pass [value]     Password of your email service
     --use-api-apps                Do you want to load your default apps on /api/apps?
     --api-apps [value]            Path to the folder to mount on /api/apps
-    --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the solid server port (e.g. "80,8080").
+    --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the ldp-web server port (e.g. "80,8080").
     --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
     --server-description [value]  A description of your server (not required)
     --server-logo [value]         A logo that represents you, your brand, or your server (not required)
@@ -219,45 +219,45 @@ Configuring Solid via the config file can be a concise and convenient method and
 Pull with:
 
 ```bash
-docker pull nodesolidserver/node-solid-server
+docker pull nodesolidserver/node-ldp-web-server
 ```
 
 Run with:
 ```bash
-docker run -p 8443:8443 --name solid nodesolidserver/node-solid-server
+docker run -p 8443:8443 --name ldp-web nodesolidserver/node-ldp-web-server
 ```
 
-This will enable you to login to solid on https://localhost:8443 and then create a new account
+This will enable you to login to ldp-web on https://localhost:8443 and then create a new account
 but not yet use that account. After a new account is made you will need to create an entry for 
 it in your local (/etc/)hosts file in line with the account and subdomain, i.e. --
 ```pre
 127.0.0.1	newsoliduser.localhost
 ```
-Then you'll be able to use solid as intended.
+Then you'll be able to use ldp-web as intended.
 
 You can modify the config within the docker container as follows:
 
  - Copy the config to the current directory with: 
    ```
-   docker cp solid:/usr/src/app/config.json .
+   docker cp ldp-web:/usr/src/app/config.json .
    ```
  - Edit the `config.json` file
  - Copy the file back with 
    ```
-   docker cp config.json solid:/usr/src/app/
+   docker cp config.json ldp-web:/usr/src/app/
    ```
  - Restart the server with 
    ```
-   docker restart solid
+   docker restart ldp-web
    ```
 
 If you want to help improve the Docker image, then you can build it locally with:
 ```bash
-git clone https://github.com/solid/node-solid-server
-cd node-solid-server
+git clone https://github.com/ldp-web/node-ldp-web-server
+cd node-ldp-web-server
 docker build .
 ```
-We have automatic builds set up, so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
+We have automatic builds set up, so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-ldp-web-server.
 
 ## Library Usage
 
@@ -271,7 +271,7 @@ npm install
 
 The library provides two APIs:
 
-- `solid.createServer(settings)`: starts a ready to use
+- `ldp-web.createServer(settings)`: starts a ready to use
     [Express](http://expressjs.com) app.
 - `lnode(settings)`: creates an [Express](http://expressjs.com) that you can
     mount in your existing express app.
@@ -302,11 +302,11 @@ for more complex ones
 
 ##### Simple Example
 
-You can create a `solid` server ready to use using `solid.createServer(opts)`
+You can create a `ldp-web` server ready to use using `ldp-web.createServer(opts)`
 
 ```javascript
-var solid = require('solid-server')
-var ldp = solid.createServer({
+var ldp-web = require('ldp-web-server')
+var ldp = ldp-web.createServer({
     key: '/path/to/sslKey.pem',
     cert: '/path/to/sslCert.pem',
     webid: true
@@ -318,13 +318,13 @@ ldp.listen(3000, function() {
 
 ##### Advanced Example
 
-You can integrate `solid` in your existing [Express](https://expressjs.org)
-app, by mounting the `solid` app on a specific path using `lnode(opts)`.
+You can integrate `ldp-web` in your existing [Express](https://expressjs.org)
+app, by mounting the `ldp-web` app on a specific path using `lnode(opts)`.
 
 ```javascript
-var solid = require('solid-server')
+var ldp-web = require('ldp-web-server')
 var app = require('express')()
-app.use('/test', solid(yourSettings))
+app.use('/test', ldp-web(yourSettings))
 app.listen(3000, function() {
   // Started Express app with ldp on '/test'
 })
@@ -336,20 +336,20 @@ app.listen(3000, function() {
 Run your app with the `DEBUG` variable set:
 
 ```bash
-$ DEBUG="solid:*" node app.js
+$ DEBUG="ldp-web:*" node app.js
 ```
 
-## Testing `solid` Locally
+## Testing `ldp-web` Locally
 
 #### Pre-Requisites
 
-In order to really get a feel for the Solid platform, and to test out `solid`,
+In order to really get a feel for the Solid platform, and to test out `ldp-web`,
 you will need the following:
 
 1. A WebID profile and browser certificate from one of the Solid-compliant
-    identity providers, such as [solid.community](https://solid.community).
+    identity providers, such as [ldp-web.community](https://solid.community).
 
-2. A server-side SSL certificate for `solid` to use (see the section below
+2. A server-side SSL certificate for `ldp-web` to use (see the section below
     on creating a self-signed certificate for testing).
 
 While these steps are technically optional (since you could launch it in
@@ -358,7 +358,7 @@ without them.
 
 #### Creating a certificate for local testing
 
-When deploying `solid` in production, we recommend that you go the
+When deploying `ldp-web` in production, we recommend that you go the
 usual Certificate Authority route to generate your SSL certificate (as you
 would with any website that supports HTTPS). However, for testing it locally,
 you can easily [generate a self-signed certificate for whatever domain you're
@@ -366,14 +366,14 @@ Working with](https://github.com/solid/node-solid-server#how-do-i-get-an-ssl-key
 
 #### Accessing your server
 
-If you started your `solid` server locally on port 8443 as in the example
+If you started your `ldp-web` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
-`solid` server would redirect you to the default data viewer app.
+`ldp-web` server would redirect you to the default data viewer app.
 
 #### Editing your local `/etc/hosts`
 
-To test certificates and account creation on subdomains, `solid`'s test suite
+To test certificates and account creation on subdomains, `ldp-web`'s test suite
 uses the following localhost domains: `nic.localhost`, `tim.localhost`, and
 `nicola.localhost`. You will need to create host file entries for these, in
 order for the tests to pass.
@@ -381,7 +381,7 @@ order for the tests to pass.
 Edit your `/etc/hosts` file, and append:
 
 ```
-# Used for unit testing solid
+# Used for unit testing ldp-web
 127.0.0.1 nic.localhost
 127.0.0.1 tim.localhost
 127.0.0.1 nicola.localhost
@@ -392,7 +392,7 @@ Edit your `/etc/hosts` file, and append:
 ```bash
 $ npm test
 # running the tests with logs
-$ DEBUG="solid:*" npm test
+$ DEBUG="ldp-web:*" npm test
 ```
 
 In order to test a single component, you can run

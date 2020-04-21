@@ -12,7 +12,7 @@ describe('SolidHost', () => {
         port: 3000,
         serverUri: 'https://localhost:3000',
         live: true,
-        root: '/data/solid/',
+        root: '/data/ldp-web/',
         multiuser: true,
         webid: true
       }
@@ -22,7 +22,7 @@ describe('SolidHost', () => {
       expect(host.serverUri).to.equal('https://localhost:3000')
       expect(host.hostname).to.equal('localhost')
       expect(host.live).to.be.true
-      expect(host.root).to.equal('/data/solid/')
+      expect(host.root).to.equal('/data/ldp-web/')
       expect(host.multiuser).to.be.true
       expect(host.webid).to.be.true
     })

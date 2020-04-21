@@ -7,8 +7,8 @@ const $rdf = require('rdflib')
 const Negotiator = require('negotiator')
 const mime = require('mime-types')
 
-const debug = require('debug')('solid:get')
-const debugGlob = require('debug')('solid:glob')
+const debug = require('debug')('ldp-web:get')
+const debugGlob = require('debug')('ldp-web:glob')
 const allow = require('./allow')
 
 const translate = require('../utils.js').translate

@@ -87,7 +87,7 @@ describe('LDNODE params', function () {
     var server = supertest(ldp)
 
     it('should serve static files on /api/ui', (done) => {
-      server.get('/api/apps/solid.png')
+      server.get('/api/apps/ldp-web.png')
         .expect(200)
         .end(done)
     })

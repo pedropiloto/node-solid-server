@@ -21,7 +21,7 @@ def container(client, image):
       detach=True,
       tty=True
   )
-  # give the solid process some seconds to create the directory structure before making assertions
+  # give the ldp-web process some seconds to create the directory structure before making assertions
   time.sleep(2)
   yield container
   container.remove(force=True)

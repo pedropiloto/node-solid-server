@@ -54,16 +54,16 @@ describe('API', () => {
   describe('Capability Discovery', () => {
     describe('GET Service Capability document', () => {
       it('should exist', (done) => {
-        alice.get('/.well-known/solid')
+        alice.get('/.well-known/ldp-web')
           .expect(200, done)
       })
       it('should be a json file by default', (done) => {
-        alice.get('/.well-known/solid')
+        alice.get('/.well-known/ldp-web')
           .expect('content-type', /application\/json/)
           .expect(200, done)
       })
       it('includes a root element', (done) => {
-        alice.get('/.well-known/solid')
+        alice.get('/.well-known/ldp-web')
           .end(function (err, req) {
             expect(req.body.root).to.exist
             return done(err)
@@ -77,9 +77,9 @@ describe('API', () => {
           },
           webid: false
         }
-        const solid = Solid(config)
+        const ldp-web = Solid(config)
         let server = supertest(solid)
-        server.get('/.well-known/solid')
+        server.get('/.well-known/ldp-web')
           .end(function (err, req) {
             expect(req.body.apps).to.exist
             return done(err)
@@ -90,7 +90,7 @@ describe('API', () => {
     describe('OPTIONS API', () => {
       it('should return the service Link header', (done) => {
         alice.options('/')
-          .expect('Link', /<.*\.well-known\/solid>; rel="service"/)
+          .expect('Link', /<.*\.well-known\/ldp-web>; rel="service"/)
           .expect(204, done)
       })
 
@@ -102,7 +102,7 @@ describe('API', () => {
 
       it('should return a service Link header without multiple slashes', (done) => {
         alice.options('/')
-          .expect('Link', /<.*[^/]\/\.well-known\/solid>; rel="service"/)
+          .expect('Link', /<.*[^/]\/\.well-known\/ldp-web>; rel="service"/)
           .expect(204, done)
       })
     })

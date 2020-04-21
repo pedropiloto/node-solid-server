@@ -1,7 +1,7 @@
 module.exports = handler
 
 const path = require('path')
-const debug = require('debug')('solid:index')
+const debug = require('debug')('ldp-web:index')
 const Negotiator = require('negotiator')
 const url = require('url')
 const URI = require('urijs')

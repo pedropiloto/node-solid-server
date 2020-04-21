@@ -16,7 +16,7 @@ function capabilityDiscovery () {
   const router = express.Router('/')
 
   // Advertise the server capability discover endpoint
-  router.get('/.well-known/solid', serviceCapabilityDocument())
+  router.get('/.well-known/ldp-web', serviceCapabilityDocument())
   return router
 }
 

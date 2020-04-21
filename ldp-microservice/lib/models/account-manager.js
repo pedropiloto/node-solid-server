@@ -119,7 +119,7 @@ class AccountManager {
    * Usage:
    *
    *   ```
-   *   // If solid-server was launched with '/accounts/' as the root directory
+   *   // If ldp-web-server was launched with '/accounts/' as the root directory
    *   // and serverUri: 'https://example.com'
    *
    *   accountManager.accountDirFor('alice')  // -> '/accounts/alice.example.com'
@@ -294,7 +294,7 @@ class AccountManager {
     let timeCreated = rdf.literal(certificate.date.toISOString(), ns.xsd('dateTime'))
     let modulus = rdf.literal(certificate.modulus, ns.xsd('hexBinary'))
     let exponent = rdf.literal(certificate.exponent, ns.xsd('int'))
-    let title = rdf.literal('Created by solid-server')
+    let title = rdf.literal('Created by ldp-web-server')
     let label = rdf.literal(certificate.commonName)
 
     graph.add(webId, ns.cert('key'), key)

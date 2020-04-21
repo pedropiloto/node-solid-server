@@ -27,7 +27,7 @@ script:
   - npm run nyc
   # Test global install of the package
   - npm pack .
-  - npm install -g solid-server-*.tgz
+  - npm install -g ldp-web-server-*.tgz
 
 after_success:
   - snyk monitor
@@ -36,5 +36,5 @@ cache: npm
 
 notifications:
   email:
-  - solid@janeirodigital.com
-  - solid-travis@inrupt.com
+  - ldp-web@janeirodigital.com
+  - ldp-web-travis@inrupt.com

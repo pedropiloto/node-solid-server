@@ -50,7 +50,7 @@ module.exports = [
   },
   {
     name: 'config-path',
-    question: 'Path to the config directory (for example: /etc/solid-server)',
+    question: 'Path to the config directory (for example: /etc/ldp-web-server)',
     default: './config',
     prompt: true
   },
@@ -306,7 +306,7 @@ module.exports = [
   },
   { // copied from name: 'owner'
     name: 'redirect-http-from',
-    help: 'HTTP port or \',\'-separated ports to redirect to the solid server port (e.g. "80,8080").',
+    help: 'HTTP port or \',\'-separated ports to redirect to the ldp-web server port (e.g. "80,8080").',
     prompt: false,
     validate: function (value) {
       if (!value.match(/^[0-9]+(,[0-9]+)*$/)) {

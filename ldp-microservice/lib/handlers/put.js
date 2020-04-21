@@ -1,7 +1,7 @@
 module.exports = handler
 
 const bodyParser = require('body-parser')
-const debug = require('debug')('solid:put')
+const debug = require('debug')('ldp-web:put')
 const getContentType = require('../utils').getContentType
 const HTTPError = require('../http-error')
 const { stringToStream } = require('../utils')

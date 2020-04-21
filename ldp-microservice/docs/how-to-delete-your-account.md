@@ -1,13 +1,13 @@
 # How to delete your account
 
-If you wish you delete your account at a multi-user pod provider that runs the node-solid-server software
-(like currently https://solid.community and https://inrupt.net), you can do that as follows:
+If you wish you delete your account at a multi-user pod provider that runs the node-ldp-web-server software
+(like currently https://ldp-web.community and https://inrupt.net), you can do that as follows:
 
 ### Browse to your pod
-Step 1 is to go to your pod with your web browser. In this example, the pod provider is https://solid.community
-and the username is 'demo-account-deletion'. So in that case you would go to https://demo-account-deletion.solid.community/.
+Step 1 is to go to your pod with your web browser. In this example, the pod provider is https://ldp-web.community
+and the username is 'demo-account-deletion'. So in that case you would go to https://demo-account-deletion.ldp-web.community/.
 
-Make sure you include your username as a subdomain there, so not just https://solid.community/ which would be the
+Make sure you include your username as a subdomain there, so not just https://ldp-web.community/ which would be the
 pod provider's main page, not your account / pod.
 Fill in your own identity provider URL and insert your own username in there, just after the 'https://' part of the URL.
 
@@ -16,7 +16,7 @@ Fill in your own identity provider URL and insert your own username in there, ju
 ### Log in
 
 When you click 'Log in', it will ask you (in a pop-up window) which identity provider to log in with; choose your own pod, in this example
-'demo-account-deletion.solid.community'.
+'demo-account-deletion.ldp-web.community'.
 
 ![Screenshot choose provider](https://user-images.githubusercontent.com/408412/66460171-a3ffc680-ea76-11e9-86b8-2fe43da4fa0e.png)
 

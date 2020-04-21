@@ -4,7 +4,7 @@ const express = require('express')
 const request = require('supertest')
 const { expect } = require('chai')
 
-const HOST = 'solid.org'
+const HOST = 'ldp-web.org'
 const USER = 'https://ruben.verborgh.org/profile/#me'
 
 describe('Auth Proxy', () => {

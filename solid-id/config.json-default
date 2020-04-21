@@ -6,8 +6,8 @@
   "mount": "/",
   "configPath": "./config",
   "dbPath": "./.db",
-  "sslKey": "../../privkey.pem",
-  "sslCert": "../../fullchain.pem",
+  "sslKey": "./privkey.pem",
+  "sslCert": "./fullchain.pem",
   "multiuser": true,
   "corsProxy": "/proxy",
   "server": {

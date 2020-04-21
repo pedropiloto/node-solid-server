@@ -1,4 +1,4 @@
-@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix ldp-web: <http://www.w3.org/ns/ldp-web/terms#>.
 <>
-    a solid:TypeIndex ;
-    a solid:UnlistedDocument.
+    a ldp-web:TypeIndex ;
+    a ldp-web:UnlistedDocument.

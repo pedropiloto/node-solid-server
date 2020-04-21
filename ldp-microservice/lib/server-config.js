@@ -50,7 +50,7 @@ function ensureDirCopyExists (fromDir, toDir) {
 }
 
 /**
- * Ensures that the server config directory (something like '/etc/solid-server'
+ * Ensures that the server config directory (something like '/etc/ldp-web-server'
  * or './config', taken from the `configPath` config.json file) exists, and
  * creates it if not.
  *

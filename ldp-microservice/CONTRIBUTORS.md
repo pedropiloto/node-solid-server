@@ -1,4 +1,4 @@
-# Contributors to the solid-server npm module
+# Contributors to the ldp-web-server npm module
 
 The Solid community wants to acknowledge the hard work and dedication put in by many people, several of whom are listed below.
 
@@ -32,5 +32,5 @@ People who have significantly contributed to issues, testing, and/or discussions
 - [Kingsley Idehen](https://github.com/kidehen)
 
 ## Community contributors
-Thanks to everyone who has tried solid-server, discussed about it, created issues and/or pull requests.
+Thanks to everyone who has tried ldp-web-server, discussed about it, created issues and/or pull requests.
 Your input is necessary to help Solid grow!

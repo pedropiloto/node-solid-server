@@ -12,7 +12,7 @@ check_if_writable()
 {
   # checks if the given dir is writable, if it exists
   # it's ok if the dir does not exist at all, because it will be created
-  # during solid server startup then and have the correct permissions
+  # during ldp-web server startup then and have the correct permissions
   dir=$1
   if [ -d "${dir}" ]; then
     if [ -w "${dir}" ]; then

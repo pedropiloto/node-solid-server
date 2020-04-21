@@ -106,7 +106,7 @@ function initHeaders (app) {
   app.use(corsSettings)
 
   app.use((req, res, next) => {
-    res.set('X-Powered-By', 'solid-server/' + version)
+    res.set('X-Powered-By', 'ldp-web-server/' + version)
 
     // Cors lib adds Vary: Origin automatically, but inreliably
     res.set('Vary', 'Accept, Authorization, Origin')

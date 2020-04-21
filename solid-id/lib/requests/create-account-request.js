@@ -5,6 +5,7 @@ const WebIdTlsCertificate = require('../models/webid-tls-certificate')
 const debug = require('../debug').accounts
 const blacklistService = require('../services/blacklist-service')
 const { isValidUsername } = require('../common/user-utils')
+const {publishMessage } = require('../services/publish-service')
 
 /**
  * Represents a 'create new user account' http request (either a POST to the
@@ -202,7 +203,15 @@ class CreateAccountRequest extends AuthRequest {
         throw error
       })
       .then(() => {
-        debug('Account storage resources created')
+        publishMessage('solid-id.account.created', JSON.stringify({ event: 'account_created', object: userAccount }))
+          .catch(error => {
+            error.message = 'Error setting account storage to be created: ' + error.message
+            throw error
+          })
+          .then(() => {
+            debug('Account storage resources set to be created')
+            return userAccount
+          })
         return userAccount
       })
   }

@@ -1,0 +1,61 @@
+version: "3.7"
+
+services:
+  ldp-consumer:
+    build:
+      context: ./ldp-microservice
+      dockerfile: Dockerfile
+    command:
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "node",
+        "bin/ldp-consumer",
+        start",
+      ]
+    depends_on:
+      - rabbitmq
+    environment:
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - static-data:/usr/src/app/data
+
+  ldp-web:
+    build:
+      context: ./ldp-microservice
+      dockerfile: Dockerfile
+    command: node bin/ldp-web start
+    ports:
+      - "8442:8442"
+    environment:
+      DEBUG: ldp:*
+      ADD_FLAGS: --no-reject-unauthorized
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      SOLID_ID_URI: https://solid-id:8443
+    volumes:
+      - static-data:/usr/src/app/data
+    depends_on:
+      - solid-id
+
+  solid-id:
+    build:
+      context: ./solid-id
+      dockerfile: Dockerfile
+    command:
+      ["./wait-for-it.sh", "rabbitmq:5672", "--", "node", "bin/solid", "start"]
+    ports:
+      - "8443:8443"
+    environment:
+      DEBUG: solid:*
+      ADD_FLAGS: --no-reject-unauthorized
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3
+
+volumes:
+  static-data:

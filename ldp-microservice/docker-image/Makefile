@@ -8,24 +8,24 @@ lint: ## run hadolint against the Dockerfile
 	docker run --rm -i hadolint/hadolint < src/Dockerfile
 
 build: ## build the docker image
-	cd src && docker build --tag nodesolidserver/node-solid-server .
+	cd src && docker build --tag nodesolidserver/node-ldp-web-server .
 
 inspect: build ## run a shell in the docker image
-	docker run --rm -it --entrypoint sh nodesolidserver/node-solid-server
+	docker run --rm -it --entrypoint sh nodesolidserver/node-ldp-web-server
 
-start: build ## start solid-server docker container
+start: build ## start ldp-web-server docker container
 	docker run --rm \
 		-it -d \
 		-p 8443:8443 \
 		-u "$(id -u):$(id -g)" \
-		-v $(shell pwd)/data:/opt/solid/data \
-		--name solid-server \
-		nodesolidserver/node-solid-server
+		-v $(shell pwd)/data:/opt/ldp-web/data \
+		--name ldp-web-server \
+		nodesolidserver/node-ldp-web-server
 
-stop: ## stop the solid-server docker container
-	docker stop solid-server
+stop: ## stop the ldp-web-server docker container
+	docker stop ldp-web-server
 
-attach: ## execute a shell in the running solid-server docker container
-	docker exec -it solid-server sh
+attach: ## execute a shell in the running ldp-web-server docker container
+	docker exec -it ldp-web-server sh
 
 .PHONY: test build inspect run attach

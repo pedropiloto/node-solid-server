@@ -1,13 +1,13 @@
 'use strict'
 
-const options = require('./options')
+const options = require('./lib/options')
 const fs = require('fs')
 const path = require('path')
-const { loadConfig } = require('./cli-utils')
+const { loadConfig } = require('./lib/cli-utils')
 const { red, bold } = require('colorette')
 
-
-const config = loadConfig(program, options)
+const config = loadConfig(options)
+let server
 bin(config, server)
 
 function bin (argv, server) {
@@ -15,10 +15,7 @@ function bin (argv, server) {
   // Set up --no-*
   argv.live = !argv.noLive
 
-  // Set up debug environment
-  if (!argv.quiet) {
-    require('debug').enable('ldp-web:*')
-  }
+    require('debug').enable('ldp:*')
 
   // Set up port
   argv.port = argv.port || 3456
@@ -33,7 +30,7 @@ function bin (argv, server) {
   }
 
   // // Finally starting ldp-web
-  const solid = require('../../')
+  const solid = require('../')
   let app
   try {
     app = solid.createServer(argv, server)

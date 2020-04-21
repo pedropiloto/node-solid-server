@@ -1,0 +1,78 @@
+const amqp = require('amqplib/callback_api')
+const handleBootstrapAccount = require('../lib/handlers/bootstrap-account')
+const AccountManager = require('../lib/models/account-manager')
+const SolidHost = require('../lib/models/solid-host')
+path = require('path')
+const options = require('./lib/options')
+const { loadConfig } = require('./lib/cli-utils')
+const LDP = require('../lib/ldp')
+const ResourceMapper = require('../lib/resource-mapper')
+
+const config = loadConfig(options)
+let accountManager = buildAccountManager(config)
+amqp.connect(config.amqpUrl, function (
+  error0,
+  connection
+) {
+  if (error0) {
+    throw error0
+  }
+  connection.createChannel(function (error1, channel) {
+    if (error1) {
+      throw error1
+    }
+    var exchange = 'solid.events'
+
+    channel.assertExchange(exchange, 'topic', {
+      durable: true,
+    })
+
+    channel.assertQueue(
+      'ldp-consumer.queue',
+      {
+        exclusive: false,
+      },
+      function (error2, q) {
+        console.log(' [*] Waiting for logs. To exit press CTRL+C')
+        channel.bindQueue(q.queue, exchange, '*.account.*')
+
+        channel.consume(
+          q.queue,
+          function (msg) {
+            console.log(
+              ' [x] %s: \'%s\'',
+              msg.fields.routingKey,
+              msg.content.toString()
+            )
+            let body = JSON.parse(msg.content.toString())
+            if (body.event === 'account_created') {
+              handleBootstrapAccount(accountManager, body.object)
+            }
+          },
+          {
+            noAck: true,
+          }
+        )
+      }
+    )
+  })
+})
+
+function buildAccountManager (config) {
+  let host = SolidHost.from(config)
+  config.resourceMapper = new ResourceMapper({
+    rootUrl: config.serverUri,
+    rootPath: path.resolve(config.root || process.cwd()),
+    includeHost: config.multiuser,
+    defaultContentType: config.defaultContentType
+  })
+  const ldp = new LDP(config)
+  let accountManager = AccountManager.from({
+    authMethod: config.auth,
+    host: host,
+    accountTemplatePath: path.resolve("./config/templates/new-account"),
+    store: ldp,
+    multiuser: config.multiuser
+  })
+  return accountManager
+}

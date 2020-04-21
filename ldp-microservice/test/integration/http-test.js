@@ -124,7 +124,7 @@ describe('HTTP APIs', function () {
       })
 
       it('should be present for non-rdf resources', function (done) {
-        server.options('/sampleContainer/solid.png')
+        server.options('/sampleContainer/ldp-web.png')
           .expect('Accept-Patch', 'application/sparql-update')
           .expect(204, done)
       })
@@ -196,7 +196,7 @@ describe('HTTP APIs', function () {
 
   describe('GET API', function () {
     it('should have the same size of the file on disk', function (done) {
-      server.get('/sampleContainer/solid.png')
+      server.get('/sampleContainer/ldp-web.png')
         .expect(200)
         .end(function (err, res) {
           if (err) {
@@ -204,7 +204,7 @@ describe('HTTP APIs', function () {
           }
 
           var size = fs.statSync(path.join(__dirname,
-            '../resources/sampleContainer/solid.png')).size
+            '../resources/sampleContainer/ldp-web.png')).size
           if (res.body.length !== size) {
             return done(new Error('files are not of the same size'))
           }
@@ -265,7 +265,7 @@ describe('HTTP APIs', function () {
         .expect(200, done) // Can't check for 303 because of internal redirects
     })
     it('should NOT load data browser (mashlib) if resource is not RDF', function (done) {
-      server.get('/sampleContainer/solid.png')
+      server.get('/sampleContainer/ldp-web.png')
         .set('Accept', 'text/html')
         .expect('content-type', /image\/png/)
         .expect(200, done)
@@ -422,7 +422,7 @@ describe('HTTP APIs', function () {
       })
     it('should have set content-type for image files',
       function (done) {
-        server.head('/sampleContainer/solid.png')
+        server.head('/sampleContainer/ldp-web.png')
           .expect('Content-Type', 'image/png; charset=utf-8')
           .end(done)
       })

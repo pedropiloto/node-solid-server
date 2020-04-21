@@ -21,7 +21,7 @@ module.exports = function (program) {
   program
     .command('init')
     .option('--advanced', 'Ask for all the settings')
-    .description('create solid server configurations')
+    .description('create ldp-web server configurations')
     .action((opts) => {
       // Filter out advanced commands
       if (!opts.advanced) {

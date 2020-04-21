@@ -1,6 +1,5 @@
 const program = require('commander')
 const loadInit = require('./init')
-const loadStart = require('./start')
 const { spawnSync } = require('child_process')
 const path = require('path')
 

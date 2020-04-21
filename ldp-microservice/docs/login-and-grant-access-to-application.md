@@ -4,7 +4,7 @@
 
 Applications provide very useful ways of consuming and producing data. Solid provides functionality that allows you to grant access to applications that you trust. This trust might be misplaced sometimes though, which Solid tries to mitigate to lessen the harm that malicious applications can cause.
 
-One of the strategies available in Solid is to check the origins of applications, and in solid-server in Node version 5 (NSS5) we set the configuration for this to be true by default. This strengthens the security of instances running on this codebase, but it also makes it more difficult for users to test applications without explicitly granting them access beforehand.
+One of the strategies available in Solid is to check the origins of applications, and in ldp-web-server in Node version 5 (NSS5) we set the configuration for this to be true by default. This strengthens the security of instances running on this codebase, but it also makes it more difficult for users to test applications without explicitly granting them access beforehand.
 
 To facilitate a better user experience, we introduced the option of granting access to applications as part of the authentication process. We believe this is a [better flow then forcing users to navigate to their profile and use the functionality provided in the trusted applications pane](https://github.com/solid/node-solid-server/issues/1142), and offer this as a temporary solution.
 

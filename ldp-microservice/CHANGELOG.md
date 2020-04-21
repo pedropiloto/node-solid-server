@@ -4,7 +4,7 @@
 
 - Node versions greater than 8 are supported.
 - Changes to vocabulary use:
-    - `solid:inbox` is deprecated in favour of `ldp:inbox`.
+    - `ldp-web:inbox` is deprecated in favour of `ldp:inbox`.
     - `acl:defaultForNew` is deprecated in favour of `acl:default`.
 - Terms of Service may be added and enforced for new registrations,
   but is disabled by default.    	
@@ -39,20 +39,20 @@
 - As of v5.0.0, all Turtle files need an extension. (**Intervention needed when updating from < 5.0.0!**)
     - **How to upgrade?**
         1. Stop the server.
-        2. Update node-solid-server to 5.0.0.
+        2. Update node-ldp-web-server to 5.0.0.
         3. Make a backup of your `data/` and `config/` folders.
-        4. Invoke `solid migrate-legacy-resources -v`.
+        4. Invoke `ldp-web migrate-legacy-resources -v`.
            This makes the files in your `data/` and `config/` folders
            automatically compatible with the new system.
            You only need to do this once.
            Different data folders can be migrated as well with the `-p` option:
-           `solid migrate-legacy-resources -p my/custom/data/folder -v`
+           `ldp-web migrate-legacy-resources -p my/custom/data/folder -v`
         5. You can now start the server again as usual.
     - **Why?**
     Before version 5.0.0, `https://pod.example/profile/card`
-    would map to `file:///solid/profile/card`, with the _assumption_
+    would map to `file:///ldp-web/profile/card`, with the _assumption_
     that it uses content-type `text/turtle`.
-    Now, this URL will map to `file:///solid/profile/card$.ttl` instead,
+    Now, this URL will map to `file:///ldp-web/profile/card$.ttl` instead,
     which makes the content-type automatically detectable.
     This fixes many of the old Content-Type-related bugs.
     _More information: https://www.w3.org/DesignIssues/HTTPFilenameMapping.html_
@@ -92,7 +92,7 @@
   the reverse proxy should be configured to pass the client certificate
   in a certain header, which is then read by a (non-public) Solid server.
 - Self-signed certificates are no longer trusted in production.
-  To allow self-signed certificates (for testing purposes), use `bin/solid-test`,
+  To allow self-signed certificates (for testing purposes), use `bin/ldp-web-test`,
   which sets `NODE_TLS_REJECT_UNAUTHORIZED=0` and `--no-reject-unauthorized`.
 - On POST requests, an extension will be appended to the file.
 - Server logging is now more concise.
@@ -106,7 +106,7 @@
 - The `idp` configuration parameter has been deprecated and
   renamed to `multiuser` to better identify its purpose.
 - Cross-domain cookie-based authentication has been removed for security reasons.
-  We instead recommend https://github.com/solid/solid-auth-client.
+  We instead recommend https://github.com/ldp-web/ldp-web-auth-client.
 - Clients should not include an extension in the slug of POST requests
   (they never should have), as the server now adds an extension.
 
@@ -148,15 +148,15 @@
 
 ## 3.3.0
 
-- Refactor acl checker to use solid-permissions lib
+- Refactor acl checker to use ldp-web-permissions lib
 - Various DataBrowser fixes, dataBrowserOption option to specify path of db file
 
 ## 3.2.0
 
-- Refactor to use external solid-namespace library
+- Refactor to use external ldp-web-namespace library
 - Move debrack() to utils.js, remove unused vocab/rdf.js functions
 - Switch from node-mime to mime-types lib
-- Refactor acl.js to prep for external solid-permissions lib
+- Refactor acl.js to prep for external ldp-web-permissions lib
 - Fix crash on PATCH request with no Content-Type
 
 ## 3.1.0
@@ -165,19 +165,19 @@
 - Implemented COPY verb
 
 ## 3.0.0
-- feat Discover WebID from root account https://github.com/solid/node-solid-server/pull/371
-- feat: Server capabilities https://github.com/solid/node-solid-server/pull/365
-- feat: pass app in createServer https://github.com/solid/node-solid-server/pull/357
-- breaking: Accounts API https://github.com/solid/node-solid-server/pull/339
+- feat Discover WebID from root account https://github.com/ldp-web/node-ldp-web-server/pull/371
+- feat: Server capabilities https://github.com/ldp-web/node-ldp-web-server/pull/365
+- feat: pass app in createServer https://github.com/ldp-web/node-ldp-web-server/pull/357
+- breaking: Accounts API https://github.com/ldp-web/node-ldp-web-server/pull/339
 
 ## 2.3.0
-- feat: added Capability discovery https://github.com/solid/node-solid-server/pull/347
+- feat: added Capability discovery https://github.com/ldp-web/node-ldp-web-server/pull/347
 
 ## 2.2.0
-- feat: added `--auth` https://github.com/solid/node-solid-server/pull/346
+- feat: added `--auth` https://github.com/ldp-web/node-ldp-web-server/pull/346
 
 ## 2.1.0
-- patch: Proxy https://github.com/solid/node-solid-server/pull/343 https://github.com/solid/node-solid-server/pull/342
+- patch: Proxy https://github.com/ldp-web/node-ldp-web-server/pull/343 https://github.com/ldp-web/node-ldp-web-server/pull/342
 - feat: added Account Recovery
 - feat: added Token Service
 - feat: added ldp.graph
@@ -186,4 +186,4 @@
 
 - feat: added Welcome Email
 - feat: added Email Service
-- other: `ldnode` turns into `solid-server`
+- other: `ldnode` turns into `ldp-web-server`

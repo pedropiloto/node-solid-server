@@ -1,6 +1,10 @@
 FROM node:8.11.2-onbuild
-EXPOSE 8443
+COPY . .
 COPY config.json-default config.json
+RUN npm install
+RUN npm install -g nodemon
+RUN chmod +x wait-for-it.sh
+
 RUN openssl req \
     -new \
     -newkey rsa:4096 \
@@ -10,4 +14,3 @@ RUN openssl req \
     -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
     -keyout privkey.pem \
     -out fullchain.pem
-CMD npm run solid start

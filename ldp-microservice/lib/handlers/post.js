@@ -1,7 +1,7 @@
 module.exports = handler
 
 const Busboy = require('busboy')
-const debug = require('debug')('solid:post')
+const debug = require('debug')('ldp-web:post')
 const path = require('path')
 const header = require('../header')
 const patch = require('./patch')

@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const { red, cyan, bold } = require('colorette')
 const { URL } = require('url')
+require('dotenv').config()
 const LDP = require('../../lib/ldp')
 const AccountManager = require('../../lib/models/account-manager')
 const SolidHost = require('../../lib/models/solid-host')
@@ -39,6 +40,14 @@ function loadConfig (program, options) {
 
     // Use flags with priority over config file
     const config = JSON.parse(file)
+
+    config.amqpUrl = process.env.AMQP_URL
+    if(!!process.env.SOLID_ID_URI) config.solidIdUri = process.env.SOLID_ID_URI
+    if(!!process.env.SOLID_SSL_KEY) config.sslKey = process.env.SOLID_SSL_KEY
+    if(!!process.env.SOLID_SSL_CERT) config.sslCert = process.env.SOLID_SSL_CERT
+    if(!!process.env.SOLID_SERVER_URI) config.serverUri = process.env.SOLID_SERVER_URI
+    if(!!process.env.SOLID_PORT) config.port = process.env.SOLID_PORT
+
     argv = { ...config, ...argv }
   } catch (err) {
     // If config file was specified, but it doesn't exist, stop with error message
