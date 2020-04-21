@@ -12,5 +12,5 @@ RUN openssl req \
     -nodes \
     -x509 \
     -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
-    -keyout privkey.pem \
-    -out fullchain.pem
+    -keyout ../privkey.pem \
+    -out ../fullchain.pem

@@ -10,7 +10,7 @@ services:
         "./wait-for-it.sh",
         "rabbitmq:5672",
         "--",
-        "node",
+        "nodemon",
         "bin/ldp-consumer",
         start",
       ]
@@ -19,13 +19,15 @@ services:
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
     volumes:
+      - ./ldp-microservice:/usr/src/app
+      - /usr/src/app/node_modules/
       - static-data:/usr/src/app/data
 
   ldp-web:
     build:
       context: ./ldp-microservice
       dockerfile: Dockerfile
-    command: node bin/ldp-web start
+    command: nodemon bin/ldp-web start
     ports:
       - "8442:8442"
     environment:
@@ -33,17 +35,28 @@ services:
       ADD_FLAGS: --no-reject-unauthorized
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       SOLID_ID_URI: https://solid-id:8443
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://localhost:8442
+      SOLID_PORT: 8442
     volumes:
+      - ./ldp-microservice:/usr/src/app
+      - /usr/src/app/node_modules/
       - static-data:/usr/src/app/data
-    depends_on:
-      - solid-id
 
   solid-id:
     build:
       context: ./solid-id
       dockerfile: Dockerfile
     command:
-      ["./wait-for-it.sh", "rabbitmq:5672", "--", "node", "bin/solid", "start"]
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "nodemon",
+        "bin/solid",
+        "start",
+      ]
     ports:
       - "8443:8443"
     environment:
@@ -51,6 +64,13 @@ services:
       ADD_FLAGS: --no-reject-unauthorized
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://localhost:8443
+      SOLID_PORT: 8443
+    volumes:
+      - ./solid-id:/usr/src/app
+      - /usr/src/app/node_modules/
     depends_on:
       - rabbitmq
 
