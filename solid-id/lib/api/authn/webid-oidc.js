@@ -15,7 +15,7 @@ const restrictToTopDomain = require('../../handlers/restrict-to-top-domain')
 const PasswordResetEmailRequest = require('../../requests/password-reset-email-request')
 const PasswordChangeRequest = require('../../requests/password-change-request')
 
-const { AuthCallbackRequest } = require('@solid/oidc-auth-manager').handlers
+const { AuthCallbackRequest } = require('oidc-auth-manager-adapted').handlers
 
 /**
  * Sets up OIDC authentication for the given app.

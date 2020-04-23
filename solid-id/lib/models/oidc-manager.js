@@ -4,7 +4,7 @@ const url = require('url')
 const path = require('path')
 const debug = require('../debug').authentication
 
-const OidcManager = require('@solid/oidc-auth-manager')
+const OidcManager = require('oidc-auth-manager-adapted')
 
 /**
  * Returns an instance of the OIDC Authentication Manager, initialized from
@@ -34,6 +34,7 @@ function fromServerConfig (argv) {
   let dbPath = path.join(argv.dbPath, 'oidc')
 
   let options = {
+    gatewayUri: argv.gatewayUri,
     debug,
     providerUri,
     dbPath,

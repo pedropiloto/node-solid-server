@@ -3,6 +3,7 @@
 const debug = require('./../debug').authentication
 
 const AuthRequest = require('./auth-request')
+const {publishMessage } = require('../services/publish-service')
 
 const url = require('url')
 const intoStream = require('into-stream')
@@ -116,6 +117,14 @@ class SharingRequest extends AuthRequest {
 
       if (consented) {
         await request.registerApp(req.app.locals.ldp, appOrigin, accessModes, request.session.subject._id)
+        publishMessage('solid-id.account.register-app', JSON.stringify({ event: 'register_app', object: {appOrigin,accessModes, webId: request.session.subject._id} }))
+          .catch(error => {
+            error.message = 'Error setting account storage to be created: ' + error.message
+            throw error
+          })
+          .then(() => {
+            debug('Account storage resources set to be created')
+          })
         request.setUserShared(appOrigin)
       }
 

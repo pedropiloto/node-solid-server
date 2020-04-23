@@ -1,7 +1,7 @@
 const Solid = require('../../index')
 const path = require('path')
 const fs = require('fs-extra')
-const { UserStore } = require('@solid/oidc-auth-manager')
+const { UserStore } = require('oidc-auth-manager-adapted')
 const UserAccount = require('../../lib/models/user-account')
 const SolidAuthOIDC = require('@solid/solid-auth-oidc')
 

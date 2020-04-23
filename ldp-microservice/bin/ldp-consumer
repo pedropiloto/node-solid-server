@@ -1,5 +1,6 @@
 const amqp = require('amqplib/callback_api')
 const handleBootstrapAccount = require('../lib/handlers/bootstrap-account')
+const registerApp = require('../lib/handlers/register-app')
 const AccountManager = require('../lib/models/account-manager')
 const SolidHost = require('../lib/models/solid-host')
 path = require('path')
@@ -48,6 +49,9 @@ amqp.connect(config.amqpUrl, function (
             if (body.event === 'account_created') {
               handleBootstrapAccount(accountManager, body.object)
             }
+            if (body.event === 'register_app') {
+              registerApp(accountManager.store, body.object.appOrigin, body.object.accessModes, body.object.webId)
+            }
           },
           {
             noAck: true,
@@ -70,7 +74,7 @@ function buildAccountManager (config) {
   let accountManager = AccountManager.from({
     authMethod: config.auth,
     host: host,
-    accountTemplatePath: path.resolve("./config/templates/new-account"),
+    accountTemplatePath: path.resolve('./config/templates/new-account'),
     store: ldp,
     multiuser: config.multiuser
   })

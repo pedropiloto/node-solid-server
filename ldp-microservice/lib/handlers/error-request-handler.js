@@ -135,7 +135,7 @@ function renderNoPermission (req, res, err) {
   debug(`Display no-permission for ${currentUrl}`)
   res.statusMessage = err.message
   res.status(403)
-  res.json({ error: 'No permission', currentUrl, webId })
+  res.json({ error: 'No permission', session: req.session, currentUrl, webId })
 }
 
 module.exports = {

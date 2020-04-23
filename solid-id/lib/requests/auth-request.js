@@ -3,7 +3,7 @@
 const url = require('url')
 const debug = require('./../debug').authentication
 
-const IDToken = require('@solid/oidc-op/src/IDToken')
+const IDToken = require('oidc-op-adapted/src/IDToken')
 
 /**
  * Hidden form fields from the login page that must be passed through to the

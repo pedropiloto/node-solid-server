@@ -46,6 +46,7 @@ function loadConfig (program, options) {
     if(!!process.env.SOLID_SSL_KEY) config.sslKey = process.env.SOLID_SSL_KEY
     if(!!process.env.SOLID_SSL_CERT) config.sslCert = process.env.SOLID_SSL_CERT
     if(!!process.env.SOLID_SERVER_URI) config.serverUri = process.env.SOLID_SERVER_URI
+    if(!!process.env.SOLID_GATEWAY_URI) config.gatewayUri = process.env.SOLID_GATEWAY_URI
     if(!!process.env.SOLID_PORT) config.port = process.env.SOLID_PORT
 
     argv = { ...config, ...argv }

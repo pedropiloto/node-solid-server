@@ -18,6 +18,11 @@ services:
       - rabbitmq
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      SOLID_ID_URI: https://solid-id:8443
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://solid:8442
+      SOLID_PORT: 8442
     volumes:
       - ./ldp-microservice:/usr/src/app
       - /usr/src/app/node_modules/
@@ -37,7 +42,7 @@ services:
       SOLID_ID_URI: https://solid-id:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://localhost:8442
+      SOLID_SERVER_URI: https://solid:8442
       SOLID_PORT: 8442
     volumes:
       - ./ldp-microservice:/usr/src/app
@@ -66,7 +71,7 @@ services:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://localhost:8443
+      SOLID_SERVER_URI: https://solid-id:8443
       SOLID_PORT: 8443
     volumes:
       - ./solid-id:/usr/src/app

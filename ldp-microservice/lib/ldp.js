@@ -464,6 +464,7 @@ class LDP {
     let trustedOrigins = [this.resourceMapper.resolveUrl(req.hostname)].concat(this.trustedOrigins)
     if (this.multiuser) {
       trustedOrigins.push(this.serverUri)
+      trustedOrigins.push(this.solidIdUri)
     }
     return trustedOrigins
   }

@@ -2,6 +2,7 @@
   "root": "./data",
   "port": "8443",
   "serverUri": "https://localhost:8443",
+    "gatewayUri": "https://localhost:8442",
   "webid": true,
   "mount": "/",
   "configPath": "./config",
