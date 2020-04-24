@@ -23,6 +23,7 @@ class UserAccount {
     this.email = options.email
     this.externalWebId = options.externalWebId
     this.localAccountId = options.localAccountId
+    this.trustedApps = !!options.trustedApps ? options.trustedApps : []
   }
 
   /**

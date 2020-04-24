@@ -3,7 +3,7 @@
 const debug = require('./../debug').authentication
 
 const AuthRequest = require('./auth-request')
-const {publishMessage } = require('../services/publish-service')
+const { publishMessage } = require('../services/publish-service')
 
 const url = require('url')
 const intoStream = require('into-stream')
@@ -72,11 +72,12 @@ class SharingRequest extends AuthRequest {
     const serverUrl = new url.URL(req.app.locals.ldp.serverUri)
 
     // Check if is already registered or is data browser or the webId is not on this machine
+        let user = await request.userStore.findUser(request.session.userId.replace('https://', ''))
     if (request.isUserLoggedIn()) {
       if (
         !request.isSubdomain(serverUrl.host, new url.URL(request.session.subject._id).host) ||
         (appUrl && request.isSubdomain(serverUrl.host, appUrl.host) && appUrl.protocol === serverUrl.protocol) ||
-        await request.isAppRegistered(req.app.locals.ldp, appOrigin, request.session.subject._id)
+        user.trustedApps.includes(appOrigin)
       ) {
         request.setUserShared(appOrigin)
         request.redirectPostSharing()
@@ -103,7 +104,7 @@ class SharingRequest extends AuthRequest {
     if (req.body) {
       accessModes = req.body.access_mode || []
       if (!Array.isArray(accessModes)) {
-        accessModes = [ accessModes ]
+        accessModes = [accessModes]
       }
       consented = req.body.consent
     }
@@ -116,8 +117,12 @@ class SharingRequest extends AuthRequest {
       debug('Sharing App')
 
       if (consented) {
-        await request.registerApp(req.app.locals.ldp, appOrigin, accessModes, request.session.subject._id)
-        publishMessage('solid-id.account.register-app', JSON.stringify({ event: 'register_app', object: {appOrigin,accessModes, webId: request.session.subject._id} }))
+        await request.registerApp(request.userStore, appOrigin, request.session.userId.replace("https://", ""))
+
+        publishMessage('solid-id.account.register-app', JSON.stringify({
+          event: 'register_app',
+          object: { appOrigin, accessModes, webId: request.session.subject._id }
+        }))
           .catch(error => {
             error.message = 'Error setting account storage to be created: ' + error.message
             throw error
@@ -195,25 +200,16 @@ class SharingRequest extends AuthRequest {
     })
   }
 
-  async registerApp (ldp, appOrigin, accessModes, webId) {
-    debug(`Registering app (${appOrigin}) with accessModes ${accessModes} for webId ${webId}`)
-    const store = await this.getProfileGraph(ldp, webId)
-    const origin = $rdf.sym(appOrigin)
-    // remove existing statements on same origin - if it exists
-    store.statementsMatching(null, ACL('origin'), origin).forEach(st => {
-      store.removeStatements([...store.statementsMatching(null, ACL('trustedApp'), st.subject)])
-      store.removeStatements([...store.statementsMatching(st.subject)])
+  async registerApp (userStore, appOrigin, webId) {
+    let user = await userStore.findUser(webId)
+    !!user.trustedApps ? user.trustedApps.push(appOrigin) : user.trustedApps = Array.of(appOrigin)
+    user.id = webId
+    userStore.saveUser(user).catch(error => {
+      error.message = 'Error registering app: ' + appOrigin + ' to user ' + webId + ' Error: ' + error.message
+      throw error
     })
-
-    // add new triples
-    const application = new $rdf.BlankNode()
-    store.add($rdf.sym(webId), ACL('trustedApp'), application, webId)
-    store.add(application, ACL('origin'), origin, webId)
-
-    accessModes.forEach(mode => {
-      store.add(application, ACL('mode'), ACL(mode))
-    })
-    await this.saveProfileGraph(ldp, store, webId)
+      .then(() =>
+        debug('Registered app: ' + appOrigin + ' to user: ' + webId))
   }
 
   /**

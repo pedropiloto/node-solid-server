@@ -333,7 +333,8 @@ class AccountManager {
       name: userData.name,
       externalWebId: userData.externalWebId,
       localAccountId: userData.localAccountId,
-      webId: userData.webid || userData.webId || userData.externalWebId
+      webId: userData.webid || userData.webId || userData.externalWebId,
+      trustedApps: !!userData.trustedApps ? userData.trustedApps : []
     }
 
     if (userConfig.username) {
