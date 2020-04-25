@@ -24,18 +24,6 @@
         <h4 class="visible-xs visible-sm xs-header">Login</h4>
         {{> auth/login-username-password}}
       {{/if}}
-      <div class="visible-md visible-lg">
-        {{> shared/create-account }}
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      {{#if enableTls}}
-        {{> auth/login-tls}}
-      {{/if}}
-      <div class="visible-xs visible-sm">
-        {{> shared/create-account }}
-      </div>
     </div>
   </div>
 </div>
