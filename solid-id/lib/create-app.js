@@ -6,7 +6,6 @@ const handlebars = require('express-handlebars')
 const uuid = require('uuid')
 const cors = require('cors')
 const LDP = require('./ldp')
-const LdpMiddleware = require('./ldp-middleware')
 const corsProxy = require('./handlers/cors-proxy')
 const authProxy = require('./handlers/auth-proxy')
 const SolidHost = require('./models/solid-host')
@@ -27,6 +26,8 @@ const ResourceMapper = require('./resource-mapper')
 const aclCheck = require('@solid/acl-check')
 const { version } = require('../package.json')
 const {createChannel } = require('./services/publish-service')
+const index = require('./handlers/index')
+const get = require('./handlers/get')
 
 const corsSettings = cors({
   methods: [
@@ -65,29 +66,8 @@ function createApp (argv = {}) {
   initHeaders(app)
   initViews(app, configPath)
   initLoggers()
-
   createChannel(argv.amqpUrl)
-
-  // Serve the public 'common' directory (for shared CSS files, etc)
-  app.use('/common', express.static(path.join(__dirname, '../common')))
-  app.use('/', express.static(path.dirname(require.resolve('mashlib/dist/index.html')), { index: false }))
-  routeResolvedFile(app, '/common/js/', 'solid-auth-client/dist-lib/solid-auth-client.bundle.js')
-  routeResolvedFile(app, '/common/js/', 'solid-auth-client/dist-lib/solid-auth-client.bundle.js.map')
-  app.use('/.well-known', express.static(path.join(__dirname, '../common/well-known')))
-
-  // Serve bootstrap from it's node_module directory
-  routeResolvedFile(app, '/common/css/', 'bootstrap/dist/css/bootstrap.min.css')
-  routeResolvedFile(app, '/common/css/', 'bootstrap/dist/css/bootstrap.min.css.map')
-  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.eot')
-  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.svg')
-  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.ttf')
-  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.woff')
-  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.woff2')
-
-  // Serve OWASP password checker from it's node_module directory
-  routeResolvedFile(app, '/common/js/', 'owasp-password-strength-test/owasp-password-strength-test.js')
-  // Serve the TextEncoder polyfill
-  routeResolvedFile(app, '/common/js/', 'text-encoder-lite/text-encoder-lite.min.js')
+  initStaticFiles(app)
 
   // Add CORS proxy
   if (argv.proxy) {
@@ -116,8 +96,11 @@ function createApp (argv = {}) {
     authProxy(app, argv.authProxy)
   }
 
-  // Attach the LDP middleware
-  app.use('/', LdpMiddleware(corsSettings))
+  router = express.Router('/')
+  router.use(corsSettings)
+  router.get('/*', index, get)
+
+  app.use('/', router)
 
   // Errors
   app.use(errorPages.handler)
@@ -148,6 +131,35 @@ function initAppLocals (app, argv, ldp) {
     app.locals.emailService = new EmailService(argv.templates.email, argv.email)
   }
 }
+
+/**
+ * Init solid static files
+ *
+ * @param app
+ */
+function initStaticFiles(app){
+  // Serve the public 'common' directory (for shared CSS files, etc)
+  app.use('/common', express.static(path.join(__dirname, '../common')))
+  app.use('/', express.static(path.dirname(require.resolve('mashlib/dist/index.html')), { index: false }))
+  routeResolvedFile(app, '/common/js/', 'solid-auth-client/dist-lib/solid-auth-client.bundle.js')
+  routeResolvedFile(app, '/common/js/', 'solid-auth-client/dist-lib/solid-auth-client.bundle.js.map')
+  app.use('/.well-known', express.static(path.join(__dirname, '../common/well-known')))
+
+  // Serve bootstrap from it's node_module directory
+  routeResolvedFile(app, '/common/css/', 'bootstrap/dist/css/bootstrap.min.css')
+  routeResolvedFile(app, '/common/css/', 'bootstrap/dist/css/bootstrap.min.css.map')
+  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.eot')
+  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.svg')
+  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.ttf')
+  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.woff')
+  routeResolvedFile(app, '/common/fonts/', 'bootstrap/dist/fonts/glyphicons-halflings-regular.woff2')
+
+  // Serve OWASP password checker from it's node_module directory
+  routeResolvedFile(app, '/common/js/', 'owasp-password-strength-test/owasp-password-strength-test.js')
+  // Serve the TextEncoder polyfill
+  routeResolvedFile(app, '/common/js/', 'text-encoder-lite/text-encoder-lite.min.js')
+}
+
 
 /**
  * Sets up headers common to all Solid requests (CORS-related, Allow, etc).
@@ -256,10 +268,6 @@ function initWebId (argv, app, ldp) {
 
   // Set up authentication-related API endpoints and app.locals
   initAuthentication(app, argv)
-
-  if (argv.multiuser) {
-    app.use(vhost('*', LdpMiddleware(corsSettings)))
-  }
 }
 
 function initLoggers () {

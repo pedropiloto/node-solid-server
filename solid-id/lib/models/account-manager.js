@@ -8,6 +8,7 @@ const defaults = require('../../config/defaults')
 const UserAccount = require('./user-account')
 const AccountTemplate = require('./account-template')
 const debug = require('./../debug').accounts
+const {publishMessage } = require('../services/publish-service')
 
 const DEFAULT_PROFILE_CONTENT_TYPE = 'text/turtle'
 const DEFAULT_ADMIN_USERNAME = 'admin'
@@ -380,23 +381,21 @@ class AccountManager {
   }
 
   /**
-   * Creates a user account storage folder (from a default account template).
+   * Emits event, so the user account storage folder is created (from a default account template).
    *
    * @param userAccount {UserAccount}
    *
    * @return {Promise}
    */
   createAccountFor (userAccount) {
-    let template = AccountTemplate.for(userAccount)
-
-    let templatePath = this.accountTemplatePath
-    let accountDir = this.accountDirFor(userAccount.username)
-
-    debug(`Creating account folder for ${userAccount.webId} at ${accountDir}`)
-
-    return AccountTemplate.copyTemplateDir(templatePath, accountDir)
+    publishMessage('solid-id.account.created', JSON.stringify({ event: 'account_created', object: userAccount }))
+      .catch(error => {
+        error.message = 'Error setting account storage to be created: ' + error.message
+        throw error
+      })
       .then(() => {
-        return template.processAccount(accountDir)
+        debug('Account storage resources set to be created')
+        return userAccount
       })
   }
 

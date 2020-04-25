@@ -135,7 +135,8 @@
   "main": "index.js",
   "scripts": {
     "solid": "node ./bin/solid",
-    "start": "node ./bin/solid start",
+    "solid-id-web": "node ./bin/solid start",
+    "solid-id-consumer": "node ./bin/solid-consumer.js",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "validate": "node ./test/validate-turtle.js",
     "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",

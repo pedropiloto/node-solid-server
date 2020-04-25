@@ -461,9 +461,10 @@ class LDP {
   }
 
   getTrustedOrigins (req) {
-    let trustedOrigins = [this.resourceMapper.resolveUrl(req.hostname)].concat(this.trustedOrigins)
+    let trustedOrigins = Array.of(this.trustedOrigins)
     if (this.multiuser) {
       trustedOrigins.push(this.serverUri)
+      trustedOrigins.push(this.gatewayUri)
     }
     return trustedOrigins
   }

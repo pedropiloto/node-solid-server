@@ -17,6 +17,12 @@ const PasswordChangeRequest = require('../../requests/password-change-request')
 
 const { AuthCallbackRequest } = require('oidc-auth-manager-adapted').handlers
 
+function createOidcManager (argv) {
+  let oidc = OidcManager.fromServerConfig(argv)
+  oidc.initialize()
+  return oidc
+}
+
 /**
  * Sets up OIDC authentication for the given app.
  *
@@ -24,9 +30,9 @@ const { AuthCallbackRequest } = require('oidc-auth-manager-adapted').handlers
  * @param argv {Object} Config options hashmap
  */
 function initialize (app, argv) {
-  const oidc = OidcManager.fromServerConfig(argv)
+  const oidc = createOidcManager(argv)
+  //oidc.initialize()
   app.locals.oidc = oidc
-  oidc.initialize()
 
   // Attach the OIDC API
   app.use('/', middleware(oidc))
@@ -194,6 +200,7 @@ function isEmptyToken (req) {
 }
 
 module.exports = {
+  createOidcManager,
   initialize,
   isEmptyToken,
   middleware,

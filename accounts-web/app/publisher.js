@@ -1,10 +1,12 @@
+require("dotenv").config();
+
 'use strict'
 
 const EXCHANGE = 'solid.events'
-const createChannel = async amqUrl => {
+const createChannel = async () => {
   const channel = async () => {
     const conn = await require('amqplib').connect(
-      amqUrl
+      process.env.AMQP_URL
     )
 
     return conn.createChannel().then(channel => {
@@ -23,7 +25,8 @@ const createChannel = async amqUrl => {
 const publishMessage = async (routingKey, message) => {
 
   globalRabbitMQChannel.publish(EXCHANGE, routingKey, Buffer.from(message))
-  console.log(' [x] SENT %s: \'%s\'', routingKey, message)
+  console.log(' [x] Sent %s: \'%s\'', routingKey, message)
 }
 
 module.exports = { createChannel, publishMessage }
+

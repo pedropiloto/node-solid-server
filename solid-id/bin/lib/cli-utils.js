@@ -31,7 +31,7 @@ function getAccountManager (config, options = {}) {
 function loadConfig (program, options) {
   let argv = {
     ...options,
-    version: program.version()
+    version: !!program ? program.version() : '1.0.0'
   }
   let configFile = argv['configFile'] || './config.json'
 
