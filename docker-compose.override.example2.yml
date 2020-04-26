@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  ldp-consumer:
+    links:
+      - "solid-id-web:id.solid.pedropiloto.com"
+    environment:
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      SOLID_ID_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://ldp.solid.pedropiloto.com:8442
+      SOLID_PORT: 8442
+
+  ldp-web:
+    environment:
+      DEBUG: ldp:*
+      ADD_FLAGS: --no-reject-unauthorized
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      SOLID_ID_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://ldp.solid.pedropiloto.com:8442
+      SOLID_PORT: 8442
+    links:
+      - "solid-id-web:id.solid.pedropiloto.com"
+
+  solid-id-web:
+    environment:
+      DEBUG: solid:*
+      ADD_FLAGS: --no-reject-unauthorized
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_PORT: 8443
+      SOLID_GATEWAY_URI: https://ldp.solid.pedropiloto.com:8442
+
+  solid-id-consumer:
+    environment:
+      DEBUG: solid:*
+      ADD_FLAGS: --no-reject-unauthorized
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_PORT: 8443
+      SOLID_GATEWAY_URI: https://ldp.pedropiloto.com:8442
