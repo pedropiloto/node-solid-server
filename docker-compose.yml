@@ -10,48 +10,44 @@ services:
         "./wait-for-it.sh",
         "rabbitmq:5672",
         "--",
-        "nodemon",
+        "node",
         "bin/ldp-consumer",
         start",
       ]
     depends_on:
       - rabbitmq
     links:
-      - "solid-id-web:solid-id.com"
+      - "solid-id-web:id.solid.pedropiloto.com"
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
-      SOLID_ID_URI: https://solid-id.com:8443
+      SOLID_ID_URI: https://id.solid.pedropiloto.com:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid.com:8442
+      SOLID_SERVER_URI: https://ldp.solid.pedropiloto.com:8442
       SOLID_PORT: 8442
     volumes:
-      - ./ldp-microservice:/usr/src/app
-      - /usr/src/app/node_modules/
       - ./data:/usr/src/app/data
 
   ldp-web:
     build:
       context: ./ldp-microservice
       dockerfile: Dockerfile
-    command: nodemon bin/ldp-web start
+    command: node bin/ldp-web start
     ports:
       - "8442:8442"
     environment:
       DEBUG: ldp:*
       ADD_FLAGS: --no-reject-unauthorized
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      SOLID_ID_URI: https://solid-id.com:8443
+      SOLID_ID_URI: https://id.solid.pedropiloto.com:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid.com:8442
+      SOLID_SERVER_URI: https://ldp.solid.pedropiloto.com:8442
       SOLID_PORT: 8442
     volumes:
-      - ./ldp-microservice:/usr/src/app
-      - /usr/src/app/node_modules/
       - ./data:/usr/src/app/data
     links:
-      - "solid-id-web:solid-id.com"
+      - "solid-id-web:id.solid.pedropiloto.com"
 
   solid-id-web:
     build:
@@ -62,7 +58,7 @@ services:
         "./wait-for-it.sh",
         "rabbitmq:5672",
         "--",
-        "nodemon",
+        "node",
         "bin/solid",
         "start",
       ]
@@ -75,12 +71,10 @@ services:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid-id.com:8443
+      SOLID_SERVER_URI: https://id.solid.pedropiloto.com:8443
       SOLID_PORT: 8443
-      SOLID_GATEWAY_URI: https://solid.com:8442
+      SOLID_GATEWAY_URI: https://ldp.solid.pedropiloto.com:8442
     volumes:
-      - ./solid-id:/usr/src/app
-      - /usr/src/app/node_modules/
       - ./store:/usr/src/app/.db
     depends_on:
       - rabbitmq
@@ -94,8 +88,7 @@ services:
         "./wait-for-it.sh",
         "rabbitmq:5672",
         "--",
-        "nodemon",
-        "run",
+        "node",
         "bin/solid-consumer.js"
       ]
     environment:
@@ -105,14 +98,14 @@ services:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid-id.com:8443
+      SOLID_SERVER_URI: https://id.solid.pedropiloto.com:8443
       SOLID_PORT: 8443
-      SOLID_GATEWAY_URI: https://solid.com:8442
+      SOLID_GATEWAY_URI: https://ldp.pedropiloto.com:8442
     volumes:
-      - ./solid-id:/usr/src/app
-      - /usr/src/app/node_modules/
       - ./store:/usr/src/app/.db
     depends_on:
+      - rabbitmq
+    links:
       - rabbitmq
 
   accounts-web:
@@ -145,7 +138,7 @@ services:
     environment:
       ACCOUNTS_WEB_HOST: accounts-web
       ACCOUNTS_WEB_PORT: 8441
-      LDP_HOST: localhost
+      LDP_HOST: ldp.solid.pedropiloto.com
       LDP_PORT: 8442
     depends_on:
       - accounts-web
