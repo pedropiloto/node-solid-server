@@ -17,13 +17,13 @@ services:
     depends_on:
       - rabbitmq
     links:
-      - "solid-id-web:id.solid.pedropiloto.com"
+      - "solid-id-web:solid-id.com"
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
-      SOLID_ID_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_ID_URI: https://solid-id.com:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://ldp.solid.pedropiloto.com:8442
+      SOLID_SERVER_URI: https://solid.com:8442
       SOLID_PORT: 8442
     volumes:
       - ./data:/usr/src/app/data
@@ -39,15 +39,15 @@ services:
       DEBUG: ldp:*
       ADD_FLAGS: --no-reject-unauthorized
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      SOLID_ID_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_ID_URI: https://solid-id.com:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://ldp.solid.pedropiloto.com:8442
+      SOLID_SERVER_URI: https://solid.com:8442
       SOLID_PORT: 8442
     volumes:
       - ./data:/usr/src/app/data
     links:
-      - "solid-id-web:id.solid.pedropiloto.com"
+      - "solid-id-web:solid-id.com"
 
   solid-id-web:
     build:
@@ -71,9 +71,9 @@ services:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_SERVER_URI: https://solid-id.com:8443
       SOLID_PORT: 8443
-      SOLID_GATEWAY_URI: https://ldp.solid.pedropiloto.com:8442
+      SOLID_GATEWAY_URI: https://solid.com:8442
     volumes:
       - ./store:/usr/src/app/.db
     depends_on:
@@ -98,9 +98,9 @@ services:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://id.solid.pedropiloto.com:8443
+      SOLID_SERVER_URI: https://solid-id.com:8443
       SOLID_PORT: 8443
-      SOLID_GATEWAY_URI: https://ldp.pedropiloto.com:8442
+      SOLID_GATEWAY_URI: https://solid.com:8442
     volumes:
       - ./store:/usr/src/app/.db
     depends_on:

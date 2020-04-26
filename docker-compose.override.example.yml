@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+  ldp-consumer:
+    command:
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "nodemon",
+        "bin/ldp-consumer",
+        start",
+      ]
+    volumes:
+      - ./ldp-microservice:/usr/src/app
+      - /usr/src/app/node_modules/
+      - ./data:/usr/src/app/data
+
+  ldp-web:
+    command: nodemon bin/ldp-web start
+    volumes:
+      - ./ldp-microservice:/usr/src/app
+      - /usr/src/app/node_modules/
+      - ./data:/usr/src/app/data
+
+  solid-id-web:
+    command:
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "nodemon",
+        "bin/solid",
+        "start",
+      ]
+    volumes:
+      - ./solid-id:/usr/src/app
+      - /usr/src/app/node_modules/
+      - ./store:/usr/src/app/.db
+
+  solid-id-consumer:
+    command:
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "nodemon",
+        "run",
+        "bin/solid-consumer.js"
+      ]
+    volumes:
+      - ./solid-id:/usr/src/app
+      - /usr/src/app/node_modules/
+      - ./store:/usr/src/app/.db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
