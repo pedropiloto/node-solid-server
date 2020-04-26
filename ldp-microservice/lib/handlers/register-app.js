@@ -11,6 +11,8 @@ module.exports = registerApp
 async function registerApp (ldp, appOrigin, accessModes, webId) {
   debug(`Registering app (${appOrigin}) with accessModes ${accessModes} for webId ${webId}`)
   const store = await getProfileGraph(ldp, webId)
+  console.log("\n STORE: ", store + "\n")
+
   const origin = $rdf.sym(appOrigin)
   // remove existing statements on same origin - if it exists
   store.statementsMatching(null, ACL('origin'), origin).forEach(st => {

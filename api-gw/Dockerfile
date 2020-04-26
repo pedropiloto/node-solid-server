@@ -6,4 +6,3 @@ COPY . .
 
 RUN yarn install
 RUN npm install -g nodemon
-RUN chmod +x wait-for-it.sh

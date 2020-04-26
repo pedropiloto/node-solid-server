@@ -68,7 +68,8 @@ function buildAccountManager (config) {
     rootUrl: config.serverUri,
     rootPath: path.resolve(config.root || process.cwd()),
     includeHost: config.multiuser,
-    defaultContentType: config.defaultContentType
+    defaultContentType: config.defaultContentType,
+    solidIdUri: config.solidIdUri
   })
   const ldp = new LDP(config)
   let accountManager = AccountManager.from({

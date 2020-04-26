@@ -1,0 +1,18 @@
+{
+  "name": "api-gw",
+  "version": "1.0.0",
+  "description": "Simple API Gateway with ExpressJS It works but is only used as an example. You may need to fit it your needs!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Pedro Piloto",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "expressjs": "^1.0.1",
+    "request": "^2.88.2"
+  }
+}

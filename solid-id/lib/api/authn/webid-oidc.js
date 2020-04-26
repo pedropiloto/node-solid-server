@@ -30,8 +30,8 @@ function createOidcManager (argv) {
  * @param argv {Object} Config options hashmap
  */
 function initialize (app, argv) {
-  const oidc = createOidcManager(argv)
-  //oidc.initialize()
+  const oidc = OidcManager.fromServerConfig(argv)
+  oidc.initialize()
   app.locals.oidc = oidc
 
   // Attach the OIDC API

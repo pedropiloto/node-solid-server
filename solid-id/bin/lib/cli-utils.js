@@ -42,6 +42,7 @@ function loadConfig (program, options) {
     const config = JSON.parse(file)
 
     config.amqpUrl = process.env.AMQP_URL
+    console.log("AMQP_URL:", config.amqpUrl)
     if(!!process.env.SOLID_ID_URI) config.solidIdUri = process.env.SOLID_ID_URI
     if(!!process.env.SOLID_SSL_KEY) config.sslKey = process.env.SOLID_SSL_KEY
     if(!!process.env.SOLID_SSL_CERT) config.sslCert = process.env.SOLID_SSL_CERT

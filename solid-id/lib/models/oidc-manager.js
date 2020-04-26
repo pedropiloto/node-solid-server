@@ -44,7 +44,6 @@ function fromServerConfig (argv) {
     delayBeforeRegisteringInitialClient: argv.delayBeforeRegisteringInitialClient,
     host: { debug }
   }
-
   return OidcManager.from(options)
 }
 

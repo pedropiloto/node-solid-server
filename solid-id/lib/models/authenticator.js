@@ -5,6 +5,7 @@ const validUrl = require('valid-url')
 const webid = require('webid/tls')
 const provider = require('oidc-auth-manager-adapted/src/preferred-provider')
 const { domainMatches } = require('oidc-auth-manager-adapted/src/oidc-manager')
+const {normalizeIdKey } = require('oidc-auth-manager-adapted/src/user-store')
 
 /**
  * Abstract Authenticator class, representing a local login strategy.
@@ -133,8 +134,13 @@ class PasswordAuthenticator extends Authenticator {
         }
 
         let user = this.accountManager.userAccountFrom(userOptions)
+        debug("PPPP", user)
 
         debug(`Attempting to login user: ${user.id}`)
+        debug(`CENAS Attempting to login user: ${normalizeIdKey(user.id)}`)
+        debug(`CENAS Attempting to login user: ${normalizeIdKey(user.id)}`)
+        console.log("user store", this.userStore)
+
 
         return this.userStore.findUser(user.id)
       })

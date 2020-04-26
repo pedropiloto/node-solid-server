@@ -11,6 +11,6 @@ RUN openssl req \
     -days 365 \
     -nodes \
     -x509 \
-    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
+    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=*.solid.com" \
     -keyout ../privkey.pem \
     -out ../fullchain.pem

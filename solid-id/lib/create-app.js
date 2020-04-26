@@ -75,9 +75,6 @@ function createApp (argv = {}) {
     corsProxy(app, argv.corsProxy)
   }
 
-  // Options handler
-  app.options('/*', options)
-
   // Set up API
   if (argv.apiApps) {
     app.use('/api/apps', express.static(argv.apiApps))

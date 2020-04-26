@@ -42,7 +42,8 @@ function createApp (argv = {}) {
     rootUrl: argv.serverUri,
     rootPath: path.resolve(argv.root || process.cwd()),
     includeHost: argv.multiuser,
-    defaultContentType: argv.defaultContentType
+    defaultContentType: argv.defaultContentType,
+    solidIdUri: argv.solidIdUri
   })
 
   config.printDebugInfo(argv)

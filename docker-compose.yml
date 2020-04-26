@@ -16,17 +16,19 @@ services:
       ]
     depends_on:
       - rabbitmq
+    links:
+      - "solid-id-web:solid-id.com"
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
-      SOLID_ID_URI: https://solid-id:8443
+      SOLID_ID_URI: https://solid-id.com:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid:8442
+      SOLID_SERVER_URI: https://solid.com:8442
       SOLID_PORT: 8442
     volumes:
       - ./ldp-microservice:/usr/src/app
       - /usr/src/app/node_modules/
-      - static-data:/usr/src/app/data
+      - ./data:/usr/src/app/data
 
   ldp-web:
     build:
@@ -39,17 +41,19 @@ services:
       DEBUG: ldp:*
       ADD_FLAGS: --no-reject-unauthorized
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      SOLID_ID_URI: https://solid-id:8443
+      SOLID_ID_URI: https://solid-id.com:8443
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid:8442
+      SOLID_SERVER_URI: https://solid.com:8442
       SOLID_PORT: 8442
     volumes:
       - ./ldp-microservice:/usr/src/app
       - /usr/src/app/node_modules/
-      - static-data:/usr/src/app/data
+      - ./data:/usr/src/app/data
+    links:
+      - "solid-id-web:solid-id.com"
 
-  solid-id:
+  solid-id-web:
     build:
       context: ./solid-id
       dockerfile: Dockerfile
@@ -71,16 +75,80 @@ services:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
       SOLID_SSL_KEY: ../privkey.pem
       SOLID_SSL_CERT: ../fullchain.pem
-      SOLID_SERVER_URI: https://solid-id:8443
+      SOLID_SERVER_URI: https://solid-id.com:8443
       SOLID_PORT: 8443
+      SOLID_GATEWAY_URI: https://solid.com:8442
     volumes:
       - ./solid-id:/usr/src/app
       - /usr/src/app/node_modules/
+      - ./store:/usr/src/app/.db
     depends_on:
       - rabbitmq
 
+  solid-id-consumer:
+    build:
+      context: ./solid-id
+      dockerfile: Dockerfile
+    command:
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "nodemon",
+        "run",
+        "bin/solid-consumer.js"
+      ]
+    environment:
+      DEBUG: solid:*
+      ADD_FLAGS: --no-reject-unauthorized
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      SOLID_SSL_KEY: ../privkey.pem
+      SOLID_SSL_CERT: ../fullchain.pem
+      SOLID_SERVER_URI: https://solid-id.com:8443
+      SOLID_PORT: 8443
+      SOLID_GATEWAY_URI: https://solid.com:8442
+    volumes:
+      - ./solid-id:/usr/src/app
+      - /usr/src/app/node_modules/
+      - ./store:/usr/src/app/.db
+    depends_on:
+      - rabbitmq
+
+  accounts-web:
+    build:
+      context: ./accounts-web
+      dockerfile: Dockerfile
+    command:
+      [
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "npm",
+        "run",
+        "start",
+      ]
+    ports:
+      - "8441:8441"
+    environment:
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  api-gw:
+    build:
+      context: ./api-gw
+      dockerfile: Dockerfile
+    command: 'npm run start'
+    ports:
+      - "9000:9000"
+    environment:
+      ACCOUNTS_WEB_HOST: accounts-web
+      ACCOUNTS_WEB_PORT: 8441
+      LDP_HOST: localhost
+      LDP_PORT: 8442
+    depends_on:
+      - accounts-web
+
   rabbitmq:
     image: rabbitmq:3
-
-volumes:
-  static-data:

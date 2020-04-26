@@ -1,5 +1,5 @@
 const fs = require('fs')
-const URL = require('url')
+const UrlLib = require('url')
 const { promisify } = require('util')
 const { types, extensions } = require('mime-types')
 const readdir = promisify(fs.readdir)
@@ -25,10 +25,13 @@ class ResourceMapper {
     includeHost = false,
     defaultContentType = 'application/octet-stream',
     indexFilename = 'index.html',
-    overrideTypes = { acl: 'text/turtle', meta: 'text/turtle' }
+    overrideTypes = { acl: 'text/turtle', meta: 'text/turtle' },
+    solidIdUri
   }) {
     this._rootUrl = this._removeTrailingSlash(rootUrl)
     this._rootPath = this._removeTrailingSlash(rootPath)
+    this._serverUri = this._removeTrailingSlash(rootUrl)
+    this._solidIdUri = this._removeTrailingSlash(solidIdUri)
     this._includeHost = includeHost
     this._readdir = readdir
     this._defaultContentType = defaultContentType
@@ -38,7 +41,7 @@ class ResourceMapper {
 
     // If the host needs to be replaced on every call, pre-split the root URL
     if (includeHost) {
-      const { protocol, port, pathname } = URL.parse(rootUrl)
+      const { protocol, port, pathname } = UrlLib.parse(rootUrl)
       this._protocol = protocol
       this._port = port === null ? '' : `:${port}`
       this._rootUrl = this._removeTrailingSlash(pathname)
@@ -89,8 +92,14 @@ class ResourceMapper {
   // Will look for an index file if a folder is given and searchIndex is true
   async mapUrlToFile ({ url, contentType, createIfNotExists, searchIndex = true }) {
     // Parse the URL and find the base file path
-    const { pathname, hostname } = this._parseUrl(url)
+    let { pathname, hostname } = this._parseUrl(url)
+   const serverUri = UrlLib.parse(this._serverUri)
+    const solidIdUri = UrlLib.parse(this._solidIdUri)
+    console.log("hostname:",hostname,"root:", serverUri.hostname, "solid_id:", solidIdUri.hostname)
+    hostname = hostname.replace(solidIdUri.hostname, serverUri.hostname)
+    console.log("resolving filePath", pathname, hostname)
     const filePath = this.resolveFilePath(hostname, decodeURIComponent(pathname))
+    console.log("filePath resolved", filePath)
     if (filePath.indexOf('/..') >= 0) {
       throw new Error('Disallowed /.. segment in URL')
     }
@@ -148,7 +157,7 @@ class ResourceMapper {
   _parseUrl (url) {
     // URL specified as string
     if (typeof url === 'string') {
-      return URL.parse(url)
+      return UrlLib.parse(url)
     }
     // URL specified as Express request object
     if (!url.pathname && url.path) {

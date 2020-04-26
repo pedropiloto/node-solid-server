@@ -29,11 +29,11 @@ function createConsumer (argv = {}) {
     multiuser: argv.multiuser
   })
   let oidc = API.authn['oidc'].createOidcManager(argv)
-  start(accountManager, oidc.users)
+  start(argv, accountManager, oidc.users)
 }
 
-function start(accountManager, userStore){
-  amqp.connect(config.amqpUrl, function (
+function start(argv, accountManager, userStore){
+  amqp.connect(argv.amqpUrl, function (
     error0,
     connection
   ) {
