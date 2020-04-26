@@ -13,6 +13,7 @@ const debug = require('./debug')
 
 function printDebugInfo (options) {
   debug.settings('Server URI: ' + options.serverUri)
+  debug.settings('Gateway URI: ' + options.gatewayUri)
   debug.settings('Auth method: ' + options.auth)
   debug.settings('Strict origins: ' + options.strictOrigin)
   debug.settings('Allowed origins: ' + options.trustedOrigins)
