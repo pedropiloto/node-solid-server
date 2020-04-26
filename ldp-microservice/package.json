@@ -56,7 +56,7 @@
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
     "@solid/acl-check": "^0.2.1",
-    "@solid/oidc-auth-manager": "^0.18.2",
+    "oidc-auth-manager-adapted": "^0.20.0",
     "amqplib": "^0.5.5",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
