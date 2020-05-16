@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const uuidv4 = require("uuid/v4");
+const mongoose = require('mongoose')
+const uuidv4 = require('uuid/v4')
 
 class Account {
   /**
@@ -14,7 +14,6 @@ class Account {
     this.email = email
     this.password = password
   }
-
 }
 
 module.exports = Account

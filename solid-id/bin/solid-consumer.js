@@ -1,5 +1,3 @@
-path = require('path')
-
 const options = require('./lib/options')
 const { loadConfig } = require('./lib/cli-utils')
 const solid = require('../')

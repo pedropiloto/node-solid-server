@@ -14,7 +14,8 @@ describe('ResourceMapper', () => {
     const mapper = new ResourceMapper({
       rootUrl,
       rootPath,
-      includeHost: false
+      includeHost: false,
+      solidIdUri: 'https://localhost:8443'
     })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
@@ -30,7 +31,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl(mapper, "a URL with a bogus extension that doesn't match the content type",
+    itMapsUrl(mapper, 'a URL with a bogus extension that doesn\'t match the content type',
       {
         url: 'http://localhost/space/foo.bar',
         contentType: 'text/html',
@@ -41,7 +42,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl(mapper, "a URL with a real extension that doesn't match the content type",
+    itMapsUrl(mapper, 'a URL with a real extension that doesn\'t match the content type',
       {
         url: 'http://localhost/space/foo.exe',
         contentType: 'text/html',
@@ -499,7 +500,9 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for a multi-host setup', () => {
-    const mapper = new ResourceMapper({ rootUrl, rootPath, includeHost: true })
+    const mapper = new ResourceMapper({
+      rootUrl, rootPath, includeHost: true, solidIdUri: 'https://localhost:8443'
+    })
 
     itMapsUrl(mapper, 'a URL with a host',
       {
@@ -564,7 +567,9 @@ describe('ResourceMapper', () => {
 
   describe('A ResourceMapper instance for a multi-host setup with a subfolder root URL', () => {
     const rootUrl = 'https://localhost/foo/bar/'
-    const mapper = new ResourceMapper({ rootUrl, rootPath, includeHost: true })
+    const mapper = new ResourceMapper({
+      rootUrl, rootPath, includeHost: true, solidIdUri: 'https://localhost:8443'
+    })
 
     itMapsFile(mapper, 'a file on a host',
       {
@@ -578,7 +583,9 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for an HTTP host with non-default port', () => {
-    const mapper = new ResourceMapper({ rootUrl: 'http://localhost:81/', rootPath })
+    const mapper = new ResourceMapper({
+      rootUrl: 'http://localhost:81/', rootPath, solidIdUri: 'https://localhost:8443'
+    })
 
     itMapsFile(mapper, 'a file with the port',
       {
@@ -592,7 +599,9 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for an HTTP host with non-default port in a multi-host setup', () => {
-    const mapper = new ResourceMapper({ rootUrl: 'http://localhost:81/', rootPath, includeHost: true })
+    const mapper = new ResourceMapper({
+      rootUrl: 'http://localhost:81/', rootPath, includeHost: true, solidIdUri: 'https://localhost:8443'
+    })
 
     itMapsFile(mapper, 'a file with the port',
       {
@@ -606,7 +615,9 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for an HTTPS host with non-default port', () => {
-    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath })
+    const mapper = new ResourceMapper({
+      rootUrl: 'https://localhost:81/', rootPath, solidIdUri: 'https://localhost:8443'
+    })
 
     itMapsFile(mapper, 'a file with the port',
       {
@@ -620,7 +631,9 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for an HTTPS host with non-default port in a multi-host setup', () => {
-    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
+    const mapper = new ResourceMapper({
+      rootUrl: 'https://localhost:81/', rootPath, includeHost: true, solidIdUri: 'https://localhost:8443'
+    })
 
     itMapsFile(mapper, 'a file with the port',
       {
@@ -634,7 +647,9 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for an HTTPS host with non-default port in a multi-host setup', () => {
-    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
+    const mapper = new ResourceMapper({
+      rootUrl: 'https://localhost:81/', rootPath, includeHost: true, solidIdUri: 'https://localhost:8443'
+    })
 
     it('throws an error when there is an improper file path', () => {
       return expect(mapper.mapFileToUrl({
@@ -674,7 +689,7 @@ function mapsUrl (it, mapper, label, options, files, expected) {
       const actual = await mapper.mapUrlToFile(options)
       expect(actual).to.deep.equal(expected)
     })
-  // Set up error test
+    // Set up error test
   } else {
     it(`does not map ${label}`, async () => {
       mockReaddir()

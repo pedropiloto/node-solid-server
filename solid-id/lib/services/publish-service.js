@@ -12,7 +12,7 @@ const createChannel = async amqUrl => {
     })
   }
 
-  let rabbitMQChannel = await channel()
+  const rabbitMQChannel = await channel()
 
   rabbitMQChannel.assertExchange(EXCHANGE, 'topic', {
     durable: true
@@ -21,7 +21,6 @@ const createChannel = async amqUrl => {
 }
 
 const publishMessage = async (routingKey, message) => {
-
   globalRabbitMQChannel.publish(EXCHANGE, routingKey, Buffer.from(message))
   console.log(' [x] SENT %s: \'%s\'', routingKey, message)
 }

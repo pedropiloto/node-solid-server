@@ -14,9 +14,8 @@ const Auth = require('../api/authn')
 function handle (err, req, res, next) {
   debug('Error page because of:', err)
 
-  let locals = req.app.locals
-  let authMethod = locals.authMethod
-  let ldp = locals.ldp
+  const locals = req.app.locals
+  const ldp = locals.ldp
 
   // If the user specifies this function,
   // they can customize the error programmatically
@@ -80,7 +79,7 @@ function setAuthenticateHeader (req, res, err) {
 function sendErrorResponse (statusCode, res, err) {
   res.status(statusCode)
   res.header('Content-Type', 'application/json')
-  res.json({error:err.message})
+  res.json({ error: err.message })
 }
 
 /**
@@ -92,7 +91,7 @@ function sendErrorResponse (statusCode, res, err) {
  * @param ldp {LDP}
  */
 function sendErrorPage (statusCode, res, err, ldp) {
-  let errorPage = ldp.errorPages + statusCode.toString() + '.html'
+  const errorPage = ldp.errorPages + statusCode.toString() + '.html'
 
   return new Promise((resolve) => {
     fs.readFile(errorPage, 'utf8', (readErr, text) => {
@@ -103,7 +102,7 @@ function sendErrorPage (statusCode, res, err, ldp) {
 
       res.status(statusCode)
       res.header('Content-Type', 'application/json')
-      res.json({error:text})
+      res.json({ error: text })
       resolve()
     })
   })

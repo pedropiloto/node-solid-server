@@ -93,18 +93,18 @@ class ResourceMapper {
   async mapUrlToFile ({ url, contentType, createIfNotExists, searchIndex = true }) {
     // Parse the URL and find the base file path
     let { pathname, hostname } = this._parseUrl(url)
-   const serverUri = UrlLib.parse(this._serverUri)
+    const serverUri = UrlLib.parse(this._serverUri)
     const solidIdUri = UrlLib.parse(this._solidIdUri)
-    console.log("hostname:",hostname,"root:", serverUri.hostname, "solid_id:", solidIdUri.hostname)
+    console.log('hostname:', hostname, 'root:', serverUri.hostname, 'solid_id:', solidIdUri.hostname)
     hostname = hostname.replace(solidIdUri.hostname, serverUri.hostname)
-    console.log("resolving filePath", pathname, hostname)
+    console.log('resolving filePath', pathname, hostname)
     const filePath = this.resolveFilePath(hostname, decodeURIComponent(pathname))
-    console.log("filePath resolved", filePath)
+    console.log('filePath resolved', filePath)
     if (filePath.indexOf('/..') >= 0) {
       throw new Error('Disallowed /.. segment in URL')
     }
-    let isFolder = filePath.endsWith('/')
-    let isIndex = searchIndex && filePath.endsWith('/')
+    const isFolder = filePath.endsWith('/')
+    const isIndex = searchIndex && filePath.endsWith('/')
 
     // Create the path for a new resource
     let path
@@ -129,7 +129,7 @@ class ResourceMapper {
 
       // Find a file with the same name (minus the dollar extension)
       let match = ''
-      if (match === '') {  // always true to keep indentation
+      if (match === '') { // always true to keep indentation
         const files = await this._readdir(folder)
         // Search for files with the same name (disregarding a dollar extension)
         if (!isFolder) {

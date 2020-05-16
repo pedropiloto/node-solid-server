@@ -6,8 +6,6 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const templateUtils = require('./common/template-utils')
-const fsUtils = require('./common/fs-utils')
 
 const debug = require('./debug')
 
@@ -59,7 +57,7 @@ function ensureDirCopyExists (fromDir, toDir) {
  * @return {string} Path to the server config dir
  */
 function initConfigDir (argv) {
-  let configPath = path.resolve(argv.configPath)
+  const configPath = path.resolve(argv.configPath)
   fs.mkdirp(configPath)
 
   return configPath
@@ -75,8 +73,8 @@ function initConfigDir (argv) {
  * @return {string} Path to the views dir
  */
 function initDefaultViews (configPath) {
-  let defaultViewsPath = path.join(__dirname, '../default-views')
-  let viewsPath = path.join(configPath, 'views')
+  const defaultViewsPath = path.join(__dirname, '../default-views')
+  const viewsPath = path.join(configPath, 'views')
 
   ensureDirCopyExists(defaultViewsPath, viewsPath)
 
@@ -95,17 +93,17 @@ function initDefaultViews (configPath) {
  *   (new account, email, server)
  */
 function initTemplateDirs (configPath) {
-  let accountTemplatePath = ensureDirCopyExists(
+  const accountTemplatePath = ensureDirCopyExists(
     path.join(__dirname, '../default-templates/new-account'),
     path.join(configPath, 'templates', 'new-account')
   )
 
-  let emailTemplatesPath = ensureDirCopyExists(
+  const emailTemplatesPath = ensureDirCopyExists(
     path.join(__dirname, '../default-templates/emails'),
     path.join(configPath, 'templates', 'emails')
   )
 
-  let serverTemplatePath = ensureDirCopyExists(
+  const serverTemplatePath = ensureDirCopyExists(
     path.join(__dirname, '../default-templates/server'),
     path.join(configPath, 'templates', 'server')
   )

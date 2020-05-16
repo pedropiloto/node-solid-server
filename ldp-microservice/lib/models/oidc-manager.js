@@ -27,13 +27,13 @@ const OidcManager = require('oidc-auth-manager-adapted')
  *   OIDC Clients store, a Resource Authenticator, and an OIDC Provider.
  */
 function fromServerConfig (argv) {
-  let providerUri = argv.solidIdUri
-  let authCallbackUri = url.resolve(providerUri, '/api/oidc/rp')
-  let postLogoutUri = url.resolve(providerUri, '/goodbye')
+  const providerUri = argv.solidIdUri
+  const authCallbackUri = url.resolve(providerUri, '/api/oidc/rp')
+  const postLogoutUri = url.resolve(providerUri, '/goodbye')
 
-  let dbPath = path.join(argv.dbPath, 'oidc')
+  const dbPath = path.join(argv.dbPath, 'oidc')
 
-  let options = {
+  const options = {
     debug,
     providerUri,
     dbPath,
@@ -41,7 +41,8 @@ function fromServerConfig (argv) {
     postLogoutUri,
     saltRounds: argv.saltRounds,
     delayBeforeRegisteringInitialClient: argv.delayBeforeRegisteringInitialClient,
-    host: { debug }
+    host: { debug },
+    solidIdUri: 'https://localhost:8443'
   }
 
   return OidcManager.from(options)

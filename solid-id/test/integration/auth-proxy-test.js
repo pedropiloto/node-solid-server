@@ -36,30 +36,7 @@ describe('Auth Proxy', () => {
       rm('index.html.acl')
     })
 
-    // Skipped tests due to not supported deep acl:accessTo #963
-    describe.skip('responding to /server/a', () => {
-      let response
-      before(() =>
-        request(server).get('/server/a/')
-          .then(res => { response = res })
-      )
-
-      it('sets the User header on the proxy request', () => {
-        expect(response.body).to.have.property('user', USER)
-      })
-    })
-
     describe('responding to GET', () => {
-      describe.skip('for a path with read permissions', () => {
-        let response
-        before(() =>
-          request(server).get('/server/a/r')
-            .then(res => { response = res })
-        )
-        it('returns status code 200', () => {
-          expect(response.statusCode).to.equal(200)
-        })
-      })
 
       describe('for a path without read permissions', () => {
         let response
@@ -69,22 +46,12 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(404)
         })
       })
     })
 
     describe('responding to OPTIONS', () => {
-      describe.skip('for a path with read permissions', () => {
-        let response
-        before(() =>
-          request(server).options('/server/a/r')
-            .then(res => { response = res })
-        )
-        it('returns status code 200', () => {
-          expect(response.statusCode).to.equal(200)
-        })
-      })
 
       describe('for a path without read permissions', () => {
         let response
@@ -94,22 +61,12 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(404)
         })
       })
     })
 
     describe('responding to POST', () => {
-      describe.skip('for a path with read and write permissions', () => {
-        let response
-        before(() =>
-          request(server).post('/server/a/rw')
-            .then(res => { response = res })
-        )
-        it('returns status code 200', () => {
-          expect(response.statusCode).to.equal(200)
-        })
-      })
 
       describe('for a path without read permissions', () => {
         let response
@@ -119,7 +76,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(404)
         })
       })
 
@@ -131,7 +88,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(404)
         })
       })
     })

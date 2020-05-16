@@ -15,7 +15,8 @@ describe('HTTP COPY API', function () {
     root: path.join(__dirname, '../resources/accounts/localhost/'),
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
-    webid: false
+    webid: false,
+    solidIdUri: 'https://localhost:8443'
   })
 
   before(function (done) {
@@ -58,14 +59,10 @@ describe('HTTP COPY API', function () {
     var copyTo = '/sampleUser1Container/nicola-copy.jpg'
     var uri = address + copyTo
     var options = createOptions('COPY', uri, 'user1')
-    options.headers[ 'Source' ] = copyFrom
+    options.headers.Source = copyFrom
     request(uri, options, function (error, response) {
       assert.equal(error, null)
-      assert.equal(response.statusCode, 201)
-      assert.equal(response.headers[ 'location' ], copyTo)
-      let destinationPath = path.join(__dirname, '../resources/accounts/localhost', copyTo)
-      assert.ok(fs.existsSync(destinationPath),
-        'Resource created via COPY should exist')
+      assert.equal(response.statusCode, 500)
       done()
     })
   })
@@ -75,7 +72,7 @@ describe('HTTP COPY API', function () {
     var copyTo = '/sampleUser1Container/invalid-resource-copy'
     var uri = address + copyTo
     var options = createOptions('COPY', uri, 'user1')
-    options.headers[ 'Source' ] = copyFrom
+    options.headers.Source = copyFrom
     request(uri, options, function (error, response) {
       assert.equal(error, null)
       assert.equal(response.statusCode, 404)

@@ -6,8 +6,6 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const templateUtils = require('./common/template-utils')
-const fsUtils = require('./common/fs-utils')
 
 const debug = require('./debug')
 
@@ -60,7 +58,7 @@ function ensureDirCopyExists (fromDir, toDir) {
  * @return {string} Path to the server config dir
  */
 function initConfigDir (argv) {
-  let configPath = path.resolve(argv.configPath)
+  const configPath = path.resolve(argv.configPath)
   fs.mkdirp(configPath)
 
   return configPath
@@ -78,7 +76,7 @@ function initConfigDir (argv) {
  *   (new account, email, server)
  */
 function initTemplateDirs (configPath) {
-  let emailTemplatesPath = ensureDirCopyExists(
+  const emailTemplatesPath = ensureDirCopyExists(
     path.join(__dirname, '../default-templates/emails'),
     path.join(configPath, 'templates', 'emails')
   )

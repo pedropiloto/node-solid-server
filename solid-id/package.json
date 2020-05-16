@@ -159,7 +159,8 @@
       "before",
       "beforeEach",
       "describe",
-      "it"
+      "it",
+      "globalRabbitMQChannel"
     ]
   },
   "bin": {

@@ -47,7 +47,7 @@ class SharingRequest extends AuthRequest {
    * @return {LoginRequest}
    */
   static fromParams (req, res) {
-    let options = AuthRequest.requestOptions(req, res)
+    const options = AuthRequest.requestOptions(req, res)
 
     return new SharingRequest(options)
   }
@@ -72,7 +72,7 @@ class SharingRequest extends AuthRequest {
     const serverUrl = new url.URL(req.app.locals.ldp.serverUri)
 
     // Check if is already registered or is data browser or the webId is not on this machine
-        let user = await request.userStore.findUser(request.session.userId.replace('https://', ''))
+    const user = await request.userStore.findUser(request.session.userId.replace('https://', ''))
     if (request.isUserLoggedIn()) {
       if (
         !request.isSubdomain(serverUrl.host, new url.URL(request.session.subject._id).host) ||
@@ -109,7 +109,7 @@ class SharingRequest extends AuthRequest {
       consented = req.body.consent
     }
 
-    let request = SharingRequest.fromParams(req, res)
+    const request = SharingRequest.fromParams(req, res)
 
     if (request.isUserLoggedIn()) {
       const appUrl = request.getAppUrl()
@@ -117,7 +117,7 @@ class SharingRequest extends AuthRequest {
       debug('Sharing App')
 
       if (consented) {
-        await request.registerApp(request.userStore, appOrigin, request.session.userId.replace("https://", ""))
+        await request.registerApp(request.userStore, appOrigin, request.session.userId.replace('https://', ''))
 
         publishMessage('solid-id.account.register-app', JSON.stringify({
           event: 'register_app',
@@ -201,8 +201,8 @@ class SharingRequest extends AuthRequest {
   }
 
   async registerApp (userStore, appOrigin, webId) {
-    let user = await userStore.findUser(webId)
-    !!user.trustedApps ? user.trustedApps.push(appOrigin) : user.trustedApps = Array.of(appOrigin)
+    const user = await userStore.findUser(webId)
+    user.trustedApps ? user.trustedApps.push(appOrigin) : user.trustedApps = Array.of(appOrigin)
     user.id = webId
     userStore.saveUser(user).catch(error => {
       error.message = 'Error registering app: ' + appOrigin + ' to user ' + webId + ' Error: ' + error.message
@@ -229,7 +229,7 @@ class SharingRequest extends AuthRequest {
    * Redirects the Login request to continue on the OIDC auth workflow.
    */
   redirectPostSharing () {
-    let uri = this.postSharingUrl()
+    const uri = this.postSharingUrl()
     debug('Login successful, redirecting to ', uri)
     this.response.redirect(uri)
   }
@@ -238,8 +238,8 @@ class SharingRequest extends AuthRequest {
    * Renders the login form
    */
   renderForm (error, req, appOrigin) {
-    let queryString = req && req.url && req.url.replace(/[^?]+\?/, '') || ''
-    let params = Object.assign({}, this.authQueryParams,
+    const queryString = req && req.url && req.url.replace(/[^?]+\?/, '') || ''
+    const params = Object.assign({}, this.authQueryParams,
       {
         registerUrl: this.registerUrl(),
         returnToUrl: this.returnToUrl,

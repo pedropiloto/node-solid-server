@@ -38,7 +38,7 @@ function initialize (app, argv) {
         next()
       })
       .catch(err => {
-        let error = new Error('Could not verify Web ID from token claims')
+        const error = new Error('Could not verify Web ID from token claims')
         error.statusCode = 401
         error.statusText = 'Invalid login'
         error.cause = err
@@ -59,9 +59,9 @@ function initialize (app, argv) {
  * @param err {Error}
  */
 function setAuthenticateHeader (req, res, err) {
-  let locals = req.app.locals
+  const locals = req.app.locals
 
-  let errorParams = {
+  const errorParams = {
     realm: locals.host.serverUri,
     scope: 'openid webid',
     error: err.error,
@@ -69,7 +69,7 @@ function setAuthenticateHeader (req, res, err) {
     error_uri: err.error_uri
   }
 
-  let challengeParams = Object.keys(errorParams)
+  const challengeParams = Object.keys(errorParams)
     .filter(key => !!errorParams[key])
     .map(key => `${key}="${errorParams[key]}"`)
     .join(', ')
@@ -102,12 +102,12 @@ function statusCodeOverride (statusCode, req) {
  * @returns {boolean}
  */
 function isEmptyToken (req) {
-  let header = req.get('Authorization')
+  const header = req.get('Authorization')
 
   if (!header) { return false }
 
   if (header.startsWith('Bearer')) {
-    let fragments = header.split(' ')
+    const fragments = header.split(' ')
 
     if (fragments.length === 1) {
       return true

@@ -7,7 +7,6 @@ const http = require('http')
 const SolidWs = require('solid-ws')
 const debug = require('./debug')
 const createApp = require('./create-app')
-const globalTunnel = require('global-tunnel-ng')
 
 function createServer (argv, app) {
   argv = argv || {}

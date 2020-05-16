@@ -31,12 +31,12 @@ class CreateAccountController {
     this.password = userData.password
   }
 
-  async call() {
+  async call () {
     try {
       this.validate()
       await this.createAccount()
     } catch (error) {
-     debug('error creating account:', error)
+      debug('error creating account:', error)
     }
   }
 
@@ -48,21 +48,21 @@ class CreateAccountController {
    * @return {Promise<UserAccount>} Resolves with newly created account instance
    */
   async createAccount () {
-    let userAccount = this.userAccount
-    let accountManager = this.accountManager
+    const userAccount = this.userAccount
+    const accountManager = this.accountManager
 
     this.cancelIfUsernameInvalid(userAccount)
     this.cancelIfBlacklistedUsername(userAccount)
-    if(! await this.userStore.findUser(userAccount.id)){
+    if (!await this.userStore.findUser(userAccount.id)) {
       await this.createAccountStorage(userAccount)
       await this.saveCredentialsFor(userAccount)
       // 'return' not used deliberately, no need to block and wait for email
-    if (userAccount && userAccount.email) {
-      debug('Sending Welcome email')
-      accountManager.sendWelcomeEmail(userAccount)
-    }
+      if (userAccount && userAccount.email) {
+        debug('Sending Welcome email')
+        accountManager.sendWelcomeEmail(userAccount)
+      }
       debug('user created with success')
-    }else{
+    } else {
       debug('user could not be created because already existed')
     }
 
@@ -125,6 +125,7 @@ class CreateAccountController {
 
     return userAccount
   }
+
   /**
    * Validates the Login request (makes sure required parameters are present),
    * and throws an error if not.
@@ -172,4 +173,3 @@ class CreateAccountController {
  */
 
 module.exports = CreateAccountController
-

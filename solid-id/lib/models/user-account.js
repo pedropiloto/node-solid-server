@@ -23,7 +23,7 @@ class UserAccount {
     this.email = options.email
     this.externalWebId = options.externalWebId
     this.localAccountId = options.localAccountId
-    this.trustedApps = !!options.trustedApps ? options.trustedApps : []
+    this.trustedApps = options.trustedApps ? options.trustedApps : []
   }
 
   /**
@@ -61,7 +61,7 @@ class UserAccount {
   get id () {
     if (!this.webId) { return null }
 
-    let parsed = url.parse(this.webId)
+    const parsed = url.parse(this.webId)
     let id = parsed.host + parsed.pathname
     if (parsed.hash) {
       id += parsed.hash
@@ -72,7 +72,7 @@ class UserAccount {
   get accountUri () {
     if (!this.webId) { return null }
 
-    let parsed = url.parse(this.webId)
+    const parsed = url.parse(this.webId)
 
     return parsed.protocol + '//' + parsed.host
   }
@@ -103,7 +103,7 @@ class UserAccount {
   get profileUri () {
     if (!this.webId) { return null }
 
-    let parsed = url.parse(this.webId)
+    const parsed = url.parse(this.webId)
     // Note that the hash fragment gets dropped
     return parsed.protocol + '//' + parsed.host + parsed.pathname
   }

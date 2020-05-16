@@ -7,11 +7,12 @@ const server = setupSupertestServer({
   dataBrowserPath: 'default',
   root: path.join(__dirname, '../resources'),
   auth: 'oidc',
-  webid: false
+  webid: false,
+  solidIdUri: 'https://localhost:8443'
 })
 
 const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../resources/invalid1.ttl'), {
-  'encoding': 'utf8'
+  encoding: 'utf8'
 })
 
 describe('HTTP requests with invalid Turtle syntax', () => {

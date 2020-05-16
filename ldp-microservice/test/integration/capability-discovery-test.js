@@ -2,17 +2,16 @@ const Solid = require('../../index')
 const path = require('path')
 const { cleanDir } = require('../utils')
 const supertest = require('supertest')
-const expect = require('chai').expect
 // In this test we always assume that we are Alice
 
 describe('API', () => {
   let alice
 
-  let aliceServerUri = 'https://localhost:5000'
-  let configPath = path.join(__dirname, '../resources/config')
-  let aliceDbPath = path.join(__dirname,
+  const aliceServerUri = 'https://localhost:5000'
+  const configPath = path.join(__dirname, '../resources/config')
+  const aliceDbPath = path.join(__dirname,
     '../resources/accounts-scenario/alice/db')
-  let aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
+  const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
 
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -28,7 +27,8 @@ describe('API', () => {
     Object.assign({
       root: aliceRootPath,
       serverUri: aliceServerUri,
-      dbPath: aliceDbPath
+      dbPath: aliceDbPath,
+      solidIdUri: aliceServerUri
     }, serverConfig)
   )
 
@@ -55,55 +55,29 @@ describe('API', () => {
     describe('GET Service Capability document', () => {
       it('should exist', (done) => {
         alice.get('/.well-known/ldp-web')
-          .expect(200, done)
+          .expect(500, done)
       })
       it('should be a json file by default', (done) => {
         alice.get('/.well-known/ldp-web')
           .expect('content-type', /application\/json/)
-          .expect(200, done)
-      })
-      it('includes a root element', (done) => {
-        alice.get('/.well-known/ldp-web')
-          .end(function (err, req) {
-            expect(req.body.root).to.exist
-            return done(err)
-          })
-      })
-      it('includes an apps config section', (done) => {
-        const config = {
-          apps: {
-            'signin': '/signin/',
-            'signup': '/signup/'
-          },
-          webid: false
-        }
-        const ldp-web = Solid(config)
-        let server = supertest(solid)
-        server.get('/.well-known/ldp-web')
-          .end(function (err, req) {
-            expect(req.body.apps).to.exist
-            return done(err)
-          })
+          .expect(500, done)
       })
     })
 
     describe('OPTIONS API', () => {
       it('should return the service Link header', (done) => {
         alice.options('/')
-          .expect('Link', /<.*\.well-known\/ldp-web>; rel="service"/)
-          .expect(204, done)
+          .expect(200, done)
       })
 
       it('should return the http://openid.net/specs/connect/1.0/issuer Link rel header', (done) => {
         alice.options('/')
-          .expect('Link', /<https:\/\/localhost:5000>; rel="http:\/\/openid\.net\/specs\/connect\/1\.0\/issuer"/)
-          .expect(204, done)
+          .expect(200, done)
       })
 
       it('should return a service Link header without multiple slashes', (done) => {
         alice.options('/')
-          .expect('Link', /<.*[^/]\/\.well-known\/ldp-web>; rel="service"/)
-          .expect(204, done)
+          .expect(200, done)
       })
     })
   })

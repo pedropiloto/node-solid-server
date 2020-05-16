@@ -5,13 +5,12 @@ const intoStream = require('into-stream')
 const $rdf = require('rdflib')
 const ACL = $rdf.Namespace('http://www.w3.org/ns/auth/acl#')
 
-
 module.exports = registerApp
 
 async function registerApp (ldp, appOrigin, accessModes, webId) {
   debug(`Registering app (${appOrigin}) with accessModes ${accessModes} for webId ${webId}`)
   const store = await getProfileGraph(ldp, webId)
-  console.log("\n STORE: ", store + "\n")
+  console.log('\n STORE: ', store + '\n')
 
   const origin = $rdf.sym(appOrigin)
   // remove existing statements on same origin - if it exists

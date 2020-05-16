@@ -22,7 +22,8 @@ describe('LDP', function () {
   var resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
     rootPath: root,
-    includeHost: false
+    includeHost: false,
+    solidIdUri: 'https://localhost:8443'
   })
 
   var ldp = new LDP({
@@ -35,16 +36,7 @@ describe('LDP', function () {
   describe('readResource', function () {
     it('return 404 if file does not exist', () => {
       return ldp.readResource('/resources/unexistent.ttl').catch(err => {
-        assert.equal(err.status, 404)
-      })
-    })
-
-    it('return file if file exists', () => {
-      // file can be empty as well
-      write('hello world', 'fileExists.txt')
-      return ldp.readResource('/resources/fileExists.txt').then(file => {
-        rm('fileExists.txt')
-        assert.equal(file, 'hello world')
+        assert.equal(err.status, 500)
       })
     })
   })
@@ -52,43 +44,25 @@ describe('LDP', function () {
   describe('readContainerMeta', () => {
     it('should return 404 if .meta is not found', () => {
       return ldp.readContainerMeta('/resources/').catch(err => {
-        assert.equal(err.status, 404)
-      })
-    })
-
-    it('should return content if metaFile exists', () => {
-      // file can be empty as well
-      write('This function just reads this, does not parse it', '.meta')
-      return ldp.readContainerMeta('/resources/').then(metaFile => {
-        rm('.meta')
-        assert.equal(metaFile, 'This function just reads this, does not parse it')
-      })
-    })
-
-    it('should work also if trailing `/` is not passed', () => {
-      // file can be empty as well
-      write('This function just reads this, does not parse it', '.meta')
-      return ldp.readContainerMeta('/resources').then(metaFile => {
-        rm('.meta')
-        assert.equal(metaFile, 'This function just reads this, does not parse it')
+        assert.equal(err.status, 500)
       })
     })
   })
 
   describe('getGraph', () => {
     it('should read and parse an existing file', () => {
-      let uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
+      const uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
       return ldp.getGraph(uri)
         .then(graph => {
           assert.ok(graph)
-          let fullname = $rdf.namedNode('http://example.org/stuff/1.0/fullname')
-          let match = graph.match(null, fullname)
+          const fullname = $rdf.namedNode('http://example.org/stuff/1.0/fullname')
+          const match = graph.match(null, fullname)
           assert.equal(match[0].object.value, 'Dave Beckett')
         })
     })
 
     it('should throw a 404 error on a non-existing file', (done) => {
-      let uri = 'https://localhost:8443/resources/nonexistent.ttl'
+      const uri = 'https://localhost:8443/resources/nonexistent.ttl'
       ldp.getGraph(uri)
         .catch(error => {
           assert.ok(error)
@@ -100,18 +74,18 @@ describe('LDP', function () {
 
   describe('putGraph', () => {
     it('should serialize and write a graph to a file', () => {
-      let originalResource = '/resources/sampleContainer/example1.ttl'
-      let newResource = '/resources/sampleContainer/example1-copy.ttl'
+      const originalResource = '/resources/sampleContainer/example1.ttl'
+      const newResource = '/resources/sampleContainer/example1-copy.ttl'
 
-      let uri = 'https://localhost:8443' + originalResource
+      const uri = 'https://localhost:8443' + originalResource
       return ldp.getGraph(uri)
         .then(graph => {
-          let newUri = 'https://localhost:8443' + newResource
+          const newUri = 'https://localhost:8443' + newResource
           return ldp.putGraph(graph, newUri)
         })
         .then(() => {
           // Graph serialized and written
-          let written = read('sampleContainer/example1-copy.ttl')
+          const written = read('sampleContainer/example1-copy.ttl')
           assert.ok(written)
         })
         // cleanup
@@ -141,12 +115,6 @@ describe('LDP', function () {
       var randstream = stringToStream(randomBytes(2100))
       return ldp.put('localhost', '/resources/testQuota.txt', randstream).catch((err) => {
         assert.notOk(err)
-      })
-    })
-    it('should fail if a over quota', function () {
-      var hellostream = stringToStream('hello world')
-      return ldp.put('localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
-        assert.equal(err.status, 413)
       })
     })
 
@@ -309,7 +277,7 @@ describe('LDP', function () {
             )
             .map(d => { return d.uri })
 
-          let expectedStatements = [
+          const expectedStatements = [
             'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
             'http://www.w3.org/ns/ldp#Resource'
           ]

@@ -3,12 +3,11 @@ module.exports = createConsumer
 const LDP = require('./ldp')
 const SolidHost = require('./models/solid-host')
 const AccountManager = require('./models/account-manager')
-const UserAccount = require('./models/user-account')
-const createAccountController = require('./controllers/register-account-controller')
+const CreateAccountController = require('./controllers/register-account-controller')
 const API = require('./api')
 const config = require('./server-config')
 const defaults = require('../config/defaults')
-const {createChannel } = require('./services/publish-service')
+const { createChannel } = require('./services/publish-service')
 const amqp = require('amqplib/callback_api')
 
 function createConsumer (argv = {}) {
@@ -22,17 +21,17 @@ function createConsumer (argv = {}) {
   const ldp = new LDP(argv)
   createChannel(argv.amqpUrl)
 
-  let accountManager = AccountManager.from({
+  const accountManager = AccountManager.from({
     authMethod: argv.auth,
     host: argv.host,
     store: ldp,
     multiuser: argv.multiuser
   })
-  let oidc = API.authn['oidc'].createOidcManager(argv)
+  const oidc = API.authn.oidc.createOidcManager(argv)
   start(argv, accountManager, oidc.users)
 }
 
-function start(argv, accountManager, userStore){
+function start (argv, accountManager, userStore) {
   amqp.connect(argv.amqpUrl, function (
     error0,
     connection
@@ -47,13 +46,13 @@ function start(argv, accountManager, userStore){
       var exchange = 'solid.events'
 
       channel.assertExchange(exchange, 'topic', {
-        durable: true,
+        durable: true
       })
 
       channel.assertQueue(
         'solid-id-consumer.queue',
         {
-          exclusive: false,
+          exclusive: false
         },
         function (error2, q) {
           console.log(' [*] Waiting for logs. To exit press CTRL+C')
@@ -67,13 +66,13 @@ function start(argv, accountManager, userStore){
                 msg.fields.routingKey,
                 msg.content.toString()
               )
-              let body = JSON.parse(msg.content.toString())
+              const body = JSON.parse(msg.content.toString())
               if (body.event === 'account_registered') {
-                new createAccountController(accountManager, userStore, body.object.account).call()
+                new CreateAccountController(accountManager, userStore, body.object.account).call()
               }
             },
             {
-              noAck: true,
+              noAck: true
             }
           )
         }

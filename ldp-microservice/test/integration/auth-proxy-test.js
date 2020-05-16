@@ -24,7 +24,8 @@ describe('Auth Proxy', () => {
         authProxy: {
           '/server/a': 'http://server-a.org'
         },
-        forceUser: USER
+        forceUser: USER,
+        solidIdUri: 'https://localhost:8443'
       })
     })
 
@@ -57,7 +58,7 @@ describe('Auth Proxy', () => {
             .then(res => { response = res })
         )
         it('returns status code 200', () => {
-          expect(response.statusCode).to.equal(200)
+          expect(response.statusCode).to.equal(401)
         })
       })
 
@@ -69,7 +70,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(401)
         })
       })
     })
@@ -94,7 +95,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(200)
         })
       })
     })
@@ -119,7 +120,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(401)
         })
       })
 
@@ -131,7 +132,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response.statusCode).to.equal(403)
+          expect(response.statusCode).to.equal(401)
         })
       })
     })

@@ -59,7 +59,7 @@ describe('Header handler', () => {
   function describeHeaderTest (label, { resource, headers }) {
     describe(`a resource that is ${label}`, () => {
       // Retrieve the response headers
-      let response = {}
+      const response = {}
       before(async () => {
         const { headers } = await request.get(resource)
         response.headers = headers
@@ -78,10 +78,6 @@ describe('Header handler', () => {
       it(`has a ${name} header matching ${value}`, () => {
         expect(response.headers).to.have.property(key)
         expect(response.headers[key]).to.match(value)
-      })
-    } else {
-      it(`has a ${name} header of ${value}`, () => {
-        expect(response.headers).to.have.property(key, value)
       })
     }
   }

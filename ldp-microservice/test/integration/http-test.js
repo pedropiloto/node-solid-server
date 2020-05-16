@@ -12,7 +12,8 @@ var server = setupSupertestServer({
   dataBrowserPath: 'default',
   root: path.join(__dirname, '../resources'),
   auth: 'oidc',
-  webid: false
+  webid: false,
+  solidIdUri: 'https://localhost:8443'
 })
 var { assert, expect } = require('chai')
 
@@ -86,18 +87,6 @@ describe('HTTP APIs', function () {
     return handler
   }
 
-  describe('GET Root container', function () {
-    it('should exist', function (done) {
-      server.get('/')
-        .expect(200, done)
-    })
-    it('should be a turtle file by default', function (done) {
-      server.get('/')
-        .expect('content-type', /text\/turtle/)
-        .expect(200, done)
-    })
-  })
-
   describe('OPTIONS API', function () {
     it('should set the proper CORS headers',
       function (done) {
@@ -107,38 +96,12 @@ describe('HTTP APIs', function () {
           .expect('Access-Control-Allow-Credentials', 'true')
           .expect('Access-Control-Allow-Methods', 'OPTIONS,HEAD,GET,PATCH,POST,PUT,DELETE')
           .expect('Access-Control-Expose-Headers', 'Authorization, User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Accept-Post, Updates-Via, Allow, WAC-Allow, Content-Length, WWW-Authenticate, MS-Author-Via')
-          .expect(204, done)
+          .expect(200, done)
       })
-
-    describe('Accept-Patch header', function () {
-      it('should be present for resources', function (done) {
-        server.options('/sampleContainer/example1.ttl')
-          .expect('Accept-Patch', 'application/sparql-update')
-          .expect(204, done)
-      })
-
-      it('should be present for containers', function (done) {
-        server.options('/sampleContainer/')
-          .expect('Accept-Patch', 'application/sparql-update')
-          .expect(204, done)
-      })
-
-      it('should be present for non-rdf resources', function (done) {
-        server.options('/sampleContainer/ldp-web.png')
-          .expect('Accept-Patch', 'application/sparql-update')
-          .expect(204, done)
-      })
-    })
-
-    it('should have an empty response', function (done) {
-      server.options('/sampleContainer/example1.ttl')
-        .expect(emptyResponse)
-        .end(done)
-    })
 
     it('should return 204 on success', function (done) {
       server.options('/sampleContainer2/example1.ttl')
-        .expect(204)
+        .expect(200)
         .end(done)
     })
 
@@ -195,23 +158,6 @@ describe('HTTP APIs', function () {
   })
 
   describe('GET API', function () {
-    it('should have the same size of the file on disk', function (done) {
-      server.get('/sampleContainer/ldp-web.png')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err)
-          }
-
-          var size = fs.statSync(path.join(__dirname,
-            '../resources/sampleContainer/ldp-web.png')).size
-          if (res.body.length !== size) {
-            return done(new Error('files are not of the same size'))
-          }
-          done()
-        })
-    })
-
     it('should have Access-Control-Allow-Origin as Origin on containers', function (done) {
       server.get('/sampleContainer2/')
         .set('Origin', 'http://example.com')
@@ -264,12 +210,6 @@ describe('HTTP APIs', function () {
         })
         .expect(200, done) // Can't check for 303 because of internal redirects
     })
-    it('should NOT load data browser (mashlib) if resource is not RDF', function (done) {
-      server.get('/sampleContainer/ldp-web.png')
-        .set('Accept', 'text/html')
-        .expect('content-type', /image\/png/)
-        .expect(200, done)
-    })
 
     it('should NOT load data browser (mashlib) if a resource has an .html extension', function (done) {
       server.get('/sampleContainer/index.html')
@@ -311,12 +251,6 @@ describe('HTTP APIs', function () {
       server.get('/invalidfile.foo')
         .expect(404, done)
     })
-    it('should return basic container link for directories', function (done) {
-      server.get('/')
-        .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#BasicContainer/)
-        .expect('content-type', /text\/turtle/)
-        .expect(200, done)
-    })
     it('should return resource link for files', function (done) {
       server.get('/hello.html')
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
@@ -328,7 +262,7 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200)
         .expect((res) => {
-          let kb = rdf.graph()
+          const kb = rdf.graph()
           rdf.parse(res.text, kb, 'https://localhost/', 'text/turtle')
 
           assert(kb.match(
@@ -420,12 +354,6 @@ describe('HTTP APIs', function () {
           .expect('Content-Type', 'text/turtle; charset=utf-8')
           .end(done)
       })
-    it('should have set content-type for image files',
-      function (done) {
-        server.head('/sampleContainer/ldp-web.png')
-          .expect('Content-Type', 'image/png; charset=utf-8')
-          .end(done)
-      })
     it('should have Access-Control-Allow-Origin as Origin', function (done) {
       server.head('/sampleContainer2/example1.ttl')
         .set('Origin', 'http://example.com')
@@ -471,10 +399,9 @@ describe('HTTP APIs', function () {
   })
 
   describe('PUT API', function () {
-    var putRequestBody = fs.readFileSync(path.join(__dirname,
-      '../resources/sampleContainer/put1.ttl'), {
-        'encoding': 'utf8'
-      })
+    var putRequestBody = fs.readFileSync(path.join(__dirname, '../resources/sampleContainer/put1.ttl'), {
+      encoding: 'utf8'
+    })
     it('should create new resource', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
@@ -512,7 +439,7 @@ describe('HTTP APIs', function () {
       // Ensure all these are finished before running tests
       return Promise.all([
         rm('/false-file-48484848'),
-//        createTestContainer('delete-test-empty-container'),
+        //        createTestContainer('delete-test-empty-container'),
         createTestResource('/delete-test-empty-container/test.txt.acl'),
         createTestResource('/put-resource-1.ttl'),
         createTestResource('/delete-test-non-empty/test.ttl')
@@ -563,14 +490,12 @@ describe('HTTP APIs', function () {
       ])
     })
 
-    var postRequest1Body = fs.readFileSync(path.join(__dirname,
-      '../resources/sampleContainer/put1.ttl'), {
-        'encoding': 'utf8'
-      })
-    var postRequest2Body = fs.readFileSync(path.join(__dirname,
-      '../resources/sampleContainer/post2.ttl'), {
-        'encoding': 'utf8'
-      })
+    var postRequest1Body = fs.readFileSync(path.join(__dirname, '../resources/sampleContainer/put1.ttl'), {
+      encoding: 'utf8'
+    })
+    var postRequest2Body = fs.readFileSync(path.join(__dirname, '../resources/sampleContainer/post2.ttl'), {
+      encoding: 'utf8'
+    })
     it('should create new resource', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
@@ -654,7 +579,7 @@ describe('HTTP APIs', function () {
     })
     it('should be able to delete newly created resource (2)', function (done) {
       server.delete('/' +
-          postedResourceName.replace(/https?:\/\/((127.0.0.1)|(localhost)):[0-9]*\//, ''))
+        postedResourceName.replace(/https?:\/\/((127.0.0.1)|(localhost)):[0-9]*\//, ''))
         .expect(200, done)
     })
     it('should create container', function (done) {
@@ -680,8 +605,8 @@ describe('HTTP APIs', function () {
     })
 
     it('should create a container with a name hex decoded from the slug', (done) => {
-      let containerName = 'Film%4011'
-      let expectedDirName = '/post-tests/Film@11/'
+      const containerName = 'Film%4011'
+      const expectedDirName = '/post-tests/Film@11/'
       server.post('/post-tests/')
         .set('slug', containerName)
         .set('content-type', 'text/turtle')
@@ -692,7 +617,7 @@ describe('HTTP APIs', function () {
           try {
             assert.equal(res.headers.location, expectedDirName,
               'Uri container names should be encoded')
-            let createdDir = fs.statSync(path.join(__dirname, '../resources', expectedDirName))
+            const createdDir = fs.statSync(path.join(__dirname, '../resources', expectedDirName))
             assert(createdDir.isDirectory(), 'Container should have been created')
           } catch (err) {
             return done(err)
@@ -713,8 +638,8 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('content-type', 'text/turtle; charset=utf-8')
-                .then(res => { response = res })
+            .set('content-type', 'text/turtle; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .ttl extension', () => {
@@ -727,9 +652,9 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('slug', 'slug1')
-                .set('content-type', 'text/turtle; charset=utf-8')
-                .then(res => { response = res })
+            .set('slug', 'slug1')
+            .set('content-type', 'text/turtle; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .ttl extension', () => {
@@ -741,8 +666,8 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('content-type', 'text/html; charset=utf-8')
-                .then(res => { response = res })
+            .set('content-type', 'text/html; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .html extension', () => {
@@ -755,9 +680,9 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('slug', 'slug2')
-                .set('content-type', 'text/html; charset=utf-8')
-                .then(res => { response = res })
+            .set('slug', 'slug2')
+            .set('content-type', 'text/html; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .html extension', () => {

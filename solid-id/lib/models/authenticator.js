@@ -5,7 +5,7 @@ const validUrl = require('valid-url')
 const webid = require('webid/tls')
 const provider = require('oidc-auth-manager-adapted/src/preferred-provider')
 const { domainMatches } = require('oidc-auth-manager-adapted/src/oidc-manager')
-const {normalizeIdKey } = require('oidc-auth-manager-adapted/src/user-store')
+const { normalizeIdKey } = require('oidc-auth-manager-adapted/src/user-store')
 
 /**
  * Abstract Authenticator class, representing a local login strategy.
@@ -80,7 +80,7 @@ class PasswordAuthenticator extends Authenticator {
    * @return {PasswordAuthenticator}
    */
   static fromParams (req, options) {
-    let body = req.body || {}
+    const body = req.body || {}
 
     options.username = body.username
     options.password = body.password
@@ -133,14 +133,13 @@ class PasswordAuthenticator extends Authenticator {
           userOptions = { username: this.username }
         }
 
-        let user = this.accountManager.userAccountFrom(userOptions)
-        debug("PPPP", user)
+        const user = this.accountManager.userAccountFrom(userOptions)
+        debug('PPPP', user)
 
         debug(`Attempting to login user: ${user.id}`)
         debug(`CENAS Attempting to login user: ${normalizeIdKey(user.id)}`)
         debug(`CENAS Attempting to login user: ${normalizeIdKey(user.id)}`)
-        console.log("user store", this.userStore)
-
+        console.log('user store', this.userStore)
 
         return this.userStore.findUser(user.id)
       })
@@ -231,7 +230,7 @@ class TlsAuthenticator extends Authenticator {
    * @returns {Promise}
    */
   renegotiateTls () {
-    let connection = this.connection
+    const connection = this.connection
 
     return new Promise((resolve, reject) => {
       // Typically, certificates for WebID-TLS are not signed or self-signed,
@@ -258,7 +257,7 @@ class TlsAuthenticator extends Authenticator {
    * @return {Promise<X509Certificate|null>}
    */
   getCertificate () {
-    let certificate = this.connection.getPeerCertificate()
+    const certificate = this.connection.getPeerCertificate()
 
     if (!certificate || !Object.keys(certificate).length) {
       debug('No client certificate detected')

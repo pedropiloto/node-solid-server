@@ -35,7 +35,8 @@ describe('Special handling: Root ACL does not give READ access to root', () => {
       multiuser: true,
       auth: 'oidc',
       strictOrigin: true,
-      host: { serverUri }
+      host: { serverUri },
+      solidIdUri: 'https://localhost:8443'
     })
     ldpHttpsServer = ldp.listen(port, done)
   })

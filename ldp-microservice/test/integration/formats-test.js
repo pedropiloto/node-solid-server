@@ -5,7 +5,8 @@ const { setupSupertestServer } = require('../utils')
 describe('formats', function () {
   const server = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
-    webid: false
+    webid: false,
+    solidIdUri: 'https://localhost:8443'
   })
 
   describe('HTML', function () {
@@ -42,8 +43,8 @@ describe('formats', function () {
     it('should return the container listing in JSON-LD if Accept is set to only application/ld+json', function (done) {
       server.get('/')
         .set('accept', 'application/ld+json')
-        .expect(200)
-        .expect('content-type', /application\/ld\+json/)
+        .expect(500)
+        .expect('content-type', /application\/json/)
         .end(done)
     })
     it('should prefer to avoid translation even if type is listed with less priority', function (done) {

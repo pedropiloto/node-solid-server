@@ -18,7 +18,7 @@ const PasswordChangeRequest = require('../../requests/password-change-request')
 const { AuthCallbackRequest } = require('oidc-auth-manager-adapted').handlers
 
 function createOidcManager (argv) {
-  let oidc = OidcManager.fromServerConfig(argv)
+  const oidc = OidcManager.fromServerConfig(argv)
   oidc.initialize()
   return oidc
 }
@@ -61,7 +61,7 @@ function initialize (app, argv) {
         next()
       })
       .catch(err => {
-        let error = new Error('Could not verify Web ID from token claims')
+        const error = new Error('Could not verify Web ID from token claims')
         error.statusCode = 401
         error.statusText = 'Invalid login'
         error.cause = err
@@ -124,7 +124,7 @@ function middleware (oidc) {
   // router.post('/token', token.bind(provider))
   // router.get('/userinfo', userinfo.bind(provider))
   // router.get('/logout', logout.bind(provider))
-  let oidcProviderApi = require('oidc-op-express')(oidc.provider)
+  const oidcProviderApi = require('oidc-op-express')(oidc.provider)
   router.use('/', oidcProviderApi)
 
   return router
@@ -139,9 +139,9 @@ function middleware (oidc) {
  * @param err {Error}
  */
 function setAuthenticateHeader (req, res, err) {
-  let locals = req.app.locals
+  const locals = req.app.locals
 
-  let errorParams = {
+  const errorParams = {
     realm: locals.host.serverUri,
     scope: 'openid webid',
     error: err.error,
@@ -149,7 +149,7 @@ function setAuthenticateHeader (req, res, err) {
     error_uri: err.error_uri
   }
 
-  let challengeParams = Object.keys(errorParams)
+  const challengeParams = Object.keys(errorParams)
     .filter(key => !!errorParams[key])
     .map(key => `${key}="${errorParams[key]}"`)
     .join(', ')
@@ -182,12 +182,12 @@ function statusCodeOverride (statusCode, req) {
  * @returns {boolean}
  */
 function isEmptyToken (req) {
-  let header = req.get('Authorization')
+  const header = req.get('Authorization')
 
   if (!header) { return false }
 
   if (header.startsWith('Bearer')) {
-    let fragments = header.split(' ')
+    const fragments = header.split(' ')
 
     if (fragments.length === 1) {
       return true

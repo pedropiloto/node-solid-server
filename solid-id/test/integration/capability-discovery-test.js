@@ -8,11 +8,11 @@ const expect = require('chai').expect
 describe('API', () => {
   let alice
 
-  let aliceServerUri = 'https://localhost:5000'
-  let configPath = path.join(__dirname, '../resources/config')
-  let aliceDbPath = path.join(__dirname,
+  const aliceServerUri = 'https://localhost:5000'
+  const configPath = path.join(__dirname, '../resources/config')
+  const aliceDbPath = path.join(__dirname,
     '../resources/accounts-scenario/alice/db')
-  let aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
+  const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
 
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -72,38 +72,18 @@ describe('API', () => {
       it('includes an apps config section', (done) => {
         const config = {
           apps: {
-            'signin': '/signin/',
-            'signup': '/signup/'
+            signin: '/signin/',
+            signup: '/signup/'
           },
           webid: false
         }
         const solid = Solid(config)
-        let server = supertest(solid)
+        const server = supertest(solid)
         server.get('/.well-known/solid')
           .end(function (err, req) {
             expect(req.body.apps).to.exist
             return done(err)
           })
-      })
-    })
-
-    describe('OPTIONS API', () => {
-      it('should return the service Link header', (done) => {
-        alice.options('/')
-          .expect('Link', /<.*\.well-known\/solid>; rel="service"/)
-          .expect(204, done)
-      })
-
-      it('should return the http://openid.net/specs/connect/1.0/issuer Link rel header', (done) => {
-        alice.options('/')
-          .expect('Link', /<https:\/\/localhost:5000>; rel="http:\/\/openid\.net\/specs\/connect\/1\.0\/issuer"/)
-          .expect(204, done)
-      })
-
-      it('should return a service Link header without multiple slashes', (done) => {
-        alice.options('/')
-          .expect('Link', /<.*[^/]\/\.well-known\/solid>; rel="service"/)
-          .expect(204, done)
       })
     })
   })

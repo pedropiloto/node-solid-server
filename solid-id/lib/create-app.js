@@ -9,7 +9,6 @@ const LDP = require('./ldp')
 const corsProxy = require('./handlers/cors-proxy')
 const SolidHost = require('./models/solid-host')
 const AccountManager = require('./models/account-manager')
-const vhost = require('vhost')
 const EmailService = require('./services/email-service')
 const TokenService = require('./services/token-service')
 const capabilityDiscovery = require('./capability-discovery')
@@ -23,7 +22,7 @@ const { routeResolvedFile } = require('./utils')
 const ResourceMapper = require('./resource-mapper')
 const aclCheck = require('@solid/acl-check')
 const { version } = require('../package.json')
-const {createChannel } = require('./services/publish-service')
+const { createChannel } = require('./services/publish-service')
 
 const corsSettings = cors({
   methods: [
@@ -101,7 +100,7 @@ function createApp (argv = {}) {
  */
 function initAppLocals (app, argv, ldp) {
   app.locals.ldp = ldp
-  app.locals.appUrls = argv.apps  // used for service capability discovery
+  app.locals.appUrls = argv.apps // used for service capability discovery
   app.locals.host = argv.host
   app.locals.authMethod = argv.auth
   app.locals.localAuth = argv.localAuth
@@ -120,7 +119,7 @@ function initAppLocals (app, argv, ldp) {
  *
  * @param app
  */
-function initStaticFiles(app){
+function initStaticFiles (app) {
   // Serve the public 'common' directory (for shared CSS files, etc)
   app.use('/common', express.static(path.join(__dirname, '../common')))
   app.use('/', express.static(path.dirname(require.resolve('mashlib/dist/index.html')), { index: false }))
@@ -142,7 +141,6 @@ function initStaticFiles(app){
   // Serve the TextEncoder polyfill
   routeResolvedFile(app, '/common/js/', 'text-encoder-lite/text-encoder-lite.min.js')
 }
-
 
 /**
  * Sets up headers common to all Solid requests (CORS-related, Allow, etc).
@@ -173,8 +171,7 @@ function initHeaders (app) {
  * @param configPath {string}
  */
 function initViews (app, configPath) {
-
-  let viewsPath = path.join(configPath, 'views')
+  const viewsPath = path.join(configPath, 'views')
 
   app.set('views', viewsPath)
   app.engine('.hbs', handlebars({
@@ -210,7 +207,7 @@ function initWebId (argv, app, ldp) {
     next()
   })
 
-  let accountManager = AccountManager.from({
+  const accountManager = AccountManager.from({
     authMethod: argv.auth,
     emailService: app.locals.emailService,
     tokenService: app.locals.tokenService,
@@ -261,7 +258,7 @@ function initAuthentication (app, argv) {
  * @return {Object} `express-session` settings object
  */
 function sessionSettings (secureCookies, host) {
-  let sessionSettings = {
+  const sessionSettings = {
     name: 'nssidp.sid',
     secret: uuid.v1(),
     saveUninitialized: false,

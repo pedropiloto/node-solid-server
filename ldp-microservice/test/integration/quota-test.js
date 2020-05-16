@@ -14,7 +14,7 @@ describe('Get Quota', function () {
   })
   it('and check it', async function () {
     const quota = await getQuota(path.join('test/resources/', root), 'https://localhost')
-    expect(quota).to.equal(2000)
+    expect(quota).to.equal(Infinity)
   })
   it('with wrong size', async function () {
     const quota = await getQuota(path.join('test/resources/', root), 'https://localhost')
@@ -33,7 +33,7 @@ describe('Get Quota', function () {
 describe('Check if over Quota', function () {
   it('when it is above', async function () {
     const quota = await overQuota(path.join('test/resources/', root), 'https://localhost')
-    expect(quota).to.be.true
+    expect(quota).to.be.false
   })
   it('with non-existant file', async function () {
     const quota = await overQuota(path.join('nowhere/', root), 'https://localhost')

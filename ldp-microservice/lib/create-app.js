@@ -2,7 +2,6 @@ module.exports = createApp
 
 const express = require('express')
 const session = require('express-session')
-const handlebars = require('express-handlebars')
 const uuid = require('uuid')
 const cors = require('cors')
 const LDP = require('./ldp')
@@ -14,7 +13,6 @@ const API = require('./api')
 const errorRequestHandler = require('./handlers/error-request-handler')
 const config = require('./server-config')
 const defaults = require('../config/defaults')
-const options = require('./handlers/options')
 const debug = require('./debug')
 const path = require('path')
 const ResourceMapper = require('./resource-mapper')
@@ -67,10 +65,10 @@ function createApp (argv = {}) {
   }
 
   // Options handler
-  //app.options('/*', options)
+  // app.options('/*', options)
 
   // Authenticate the user
-    initWebId(argv, app, ldp)
+  initWebId(argv, app, ldp)
 
   // Attach the LDP middleware
   app.use('/', LdpMiddleware(corsSettings))
@@ -91,7 +89,7 @@ function createApp (argv = {}) {
  */
 function initAppLocals (app, argv, ldp) {
   app.locals.ldp = ldp
-  app.locals.appUrls = argv.apps  // used for service capability discovery
+  app.locals.appUrls = argv.apps // used for service capability discovery
   app.locals.host = argv.host
   app.locals.enforceToc = argv.enforceToc
   app.locals.tocUri = argv.tocUri
@@ -117,7 +115,7 @@ function initHeaders (app) {
     next()
   })
 
-  //app.use('/', capabilityDiscovery())
+  // app.use('/', capabilityDiscovery())
 }
 
 /**
@@ -128,7 +126,6 @@ function initHeaders (app) {
  * @param ldp {LDP}
  */
 function initWebId (argv, app, ldp) {
-
   // Store the user's session key in a cookie
   // (for same-domain browsing by people only)
   const useSecureCookies = !!argv.sslKey // use secure cookies when over HTTPS
@@ -172,7 +169,7 @@ function initLoggers () {
  * @param argv {Object} Config options hashmap
  */
 function initAuthentication (app, argv) {
-  API.authn['oidc'].initialize(app, argv)
+  API.authn.oidc.initialize(app, argv)
 }
 
 /**
@@ -184,7 +181,7 @@ function initAuthentication (app, argv) {
  * @return {Object} `express-session` settings object
  */
 function sessionSettings (secureCookies, host) {
-  let sessionSettings = {
+  const sessionSettings = {
     name: 'nssidp.sid',
     secret: uuid.v1(),
     saveUninitialized: false,

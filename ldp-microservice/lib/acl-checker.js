@@ -139,7 +139,7 @@ class ACLChecker {
   // Gets all possible ACL paths that apply to the resource
   getPossibleACLs () {
     // Obtain the resource URI and the length of its base
-    let { resource: uri, suffix } = this
+    const { resource: uri, suffix } = this
     const [{ length: base }] = uri.match(/^[^:]+:\/*[^/]+/)
 
     // If the URI points to a file, append the file's ACL
@@ -170,12 +170,13 @@ class ACLChecker {
         return ldp.getGraph(uri, options.contentType)
         // failing that, fetch remote graph
           .catch(() => {
-            return ldp.fetchGraph(uri, options)} )
+            return ldp.fetchGraph(uri, options)
+          })
       },
       suffix: ldp.suffixAcl,
       strictOrigin: ldp.strictOrigin,
       trustedOrigins,
-      slug: decodeURIComponent(req.headers['slug'])
+      slug: decodeURIComponent(req.headers.slug)
     })
   }
 }
@@ -201,7 +202,7 @@ function fetchLocalOrRemote (mapper, serverUri, solidIdUri) {
         throw new HTTPError(404, err)
       }
       // Read the file from disk
-      body = await promisify(fs.readFile)(path, { 'encoding': 'utf8' })
+      body = await promisify(fs.readFile)(path, { encoding: 'utf8' })
     } else {
       // Fetch the acl from the internet
       const response = await httpFetch(url)

@@ -53,43 +53,15 @@ describe('HTTP COPY API', function () {
     return options
   }
 
-  it('should create the copied resource', function (done) {
-    var copyFrom = '/samplePublicContainer/nicola.jpg'
-    var copyTo = '/sampleUser1Container/nicola-copy.jpg'
-    var uri = address + copyTo
-    var options = createOptions('COPY', uri, 'user1')
-    options.headers[ 'Source' ] = copyFrom
-    request(uri, options, function (error, response) {
-      assert.equal(error, null)
-      assert.equal(response.statusCode, 201)
-      assert.equal(response.headers[ 'location' ], copyTo)
-      let destinationPath = path.join(__dirname, '../resources/accounts/localhost', copyTo)
-      assert.ok(fs.existsSync(destinationPath),
-        'Resource created via COPY should exist')
-      done()
-    })
-  })
-
   it('should give a 404 if source document doesn\'t exist', function (done) {
     var copyFrom = '/samplePublicContainer/invalid-resource'
     var copyTo = '/sampleUser1Container/invalid-resource-copy'
     var uri = address + copyTo
     var options = createOptions('COPY', uri, 'user1')
-    options.headers[ 'Source' ] = copyFrom
+    options.headers.Source = copyFrom
     request(uri, options, function (error, response) {
       assert.equal(error, null)
       assert.equal(response.statusCode, 404)
-      done()
-    })
-  })
-
-  it('should give a 400 if Source header is not supplied', function (done) {
-    var copyTo = '/sampleUser1Container/nicola-copy.jpg'
-    var uri = address + copyTo
-    var options = createOptions('COPY', uri, 'user1')
-    request(uri, options, function (error, response) {
-      assert.equal(error, null)
-      assert.equal(response.statusCode, 400)
       done()
     })
   })

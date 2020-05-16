@@ -31,9 +31,9 @@ function getAccountManager (config, options = {}) {
 function loadConfig (program, options) {
   let argv = {
     ...options,
-    version: !!program ? program.version() : '1.0.0'
+    version: program ? program.version() : '1.0.0'
   }
-  let configFile = argv['configFile'] || './config.json'
+  const configFile = argv.configFile || './config.json'
 
   try {
     const file = fs.readFileSync(configFile)
@@ -42,18 +42,18 @@ function loadConfig (program, options) {
     const config = JSON.parse(file)
 
     config.amqpUrl = process.env.AMQP_URL
-    console.log("AMQP_URL:", config.amqpUrl)
-    if(!!process.env.SOLID_ID_URI) config.solidIdUri = process.env.SOLID_ID_URI
-    if(!!process.env.SOLID_SSL_KEY) config.sslKey = process.env.SOLID_SSL_KEY
-    if(!!process.env.SOLID_SSL_CERT) config.sslCert = process.env.SOLID_SSL_CERT
-    if(!!process.env.SOLID_SERVER_URI) config.serverUri = process.env.SOLID_SERVER_URI
-    if(!!process.env.SOLID_GATEWAY_URI) config.gatewayUri = process.env.SOLID_GATEWAY_URI
-    if(!!process.env.SOLID_PORT) config.port = process.env.SOLID_PORT
+    console.log('AMQP_URL:', config.amqpUrl)
+    if (process.env.SOLID_ID_URI) config.solidIdUri = process.env.SOLID_ID_URI
+    if (process.env.SOLID_SSL_KEY) config.sslKey = process.env.SOLID_SSL_KEY
+    if (process.env.SOLID_SSL_CERT) config.sslCert = process.env.SOLID_SSL_CERT
+    if (process.env.SOLID_SERVER_URI) config.serverUri = process.env.SOLID_SERVER_URI
+    if (process.env.SOLID_GATEWAY_URI) config.gatewayUri = process.env.SOLID_GATEWAY_URI
+    if (process.env.SOLID_PORT) config.port = process.env.SOLID_PORT
 
     argv = { ...config, ...argv }
   } catch (err) {
     // If config file was specified, but it doesn't exist, stop with error message
-    if (typeof argv['configFile'] !== 'undefined') {
+    if (typeof argv.configFile !== 'undefined') {
       if (!fs.existsSync(configFile)) {
         console.log(red(bold('ERR')), 'Config file ' + configFile + ' doesn\'t exist.')
         process.exit(1)

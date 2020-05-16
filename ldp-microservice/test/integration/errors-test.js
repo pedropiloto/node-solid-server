@@ -6,14 +6,16 @@ describe('Error pages', function () {
   const errorServer = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     errorPages: path.join(__dirname, '../resources/errorPages'),
-    webid: false
+    webid: false,
+    solidIdUri: 'https://localhost:8443'
   })
 
   // LDP with no error pages
   const noErrorServer = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     noErrorPages: true,
-    webid: false
+    webid: false,
+    solidIdUri: 'https://localhost:8443'
   })
 
   function defaultErrorPage (filepath, expected) {
