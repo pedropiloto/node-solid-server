@@ -37,7 +37,6 @@ describe('Auth Proxy', () => {
     })
 
     describe('responding to GET', () => {
-
       describe('for a path without read permissions', () => {
         let response
         before(() =>
@@ -52,7 +51,6 @@ describe('Auth Proxy', () => {
     })
 
     describe('responding to OPTIONS', () => {
-
       describe('for a path without read permissions', () => {
         let response
         before(() =>
@@ -67,7 +65,6 @@ describe('Auth Proxy', () => {
     })
 
     describe('responding to POST', () => {
-
       describe('for a path without read permissions', () => {
         let response
         before(() =>
