@@ -2,14 +2,14 @@ module.exports = LdpMiddleware
 
 const express = require('express')
 const header = require('./header')
-const allow = require('./handlers/allow')
-const get = require('./handlers/get')
-const post = require('./handlers/post')
-const put = require('./handlers/put')
-const del = require('./handlers/delete')
-const patch = require('./handlers/patch')
-const index = require('./handlers/index')
-const copy = require('./handlers/copy')
+const allow = require('./controllers/allow')
+const get = require('./controllers/get')
+const post = require('./controllers/post')
+const put = require('./controllers/put')
+const del = require('./controllers/delete')
+const patch = require('./controllers/patch')
+const index = require('./controllers/index')
+const copy = require('./controllers/copy')
 
 function LdpMiddleware (corsSettings) {
   const router = express.Router('/')

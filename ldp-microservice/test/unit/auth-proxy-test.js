@@ -1,4 +1,4 @@
-const authProxy = require('../../lib/handlers/auth-proxy')
+const authProxy = require('../../lib/controllers/auth-proxy')
 const nock = require('nock')
 const express = require('express')
 const request = require('supertest')

@@ -1,6 +1,6 @@
 const amqp = require('amqplib/callback_api')
-const handleBootstrapAccount = require('../lib/handlers/bootstrap-account')
-const registerApp = require('../lib/handlers/register-app')
+const handleBootstrapAccount = require('../lib/controllers/bootstrap-account')
+const registerApp = require('../lib/controllers/register-app')
 const AccountManager = require('../lib/models/account-manager')
 const SolidHost = require('../lib/models/solid-host')
 path = require('path')
